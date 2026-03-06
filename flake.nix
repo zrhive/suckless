@@ -1,5 +1,5 @@
 {
-		Description = "suckless configuration that sucks less";
+		description = "suckless configuration that sucks less";
 
 		outputs = { self }: {
 				nixosModules.default = import ./.;
