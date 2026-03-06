@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: with pkgs;
+{ config, lib, pkgs, ... }:
 
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
