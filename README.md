@@ -1,7 +1,10 @@
-configurations that suck less
-==============================
+config that sucks less
+======================
+*a not so minimal suckless config*
 
-*suckless configurations for my taste*
+This repo meant to be a showcase,
+setup and used by @zhyie -- for her taste
+
 
 Software
 --------
@@ -15,16 +18,16 @@ Patches
 -------
 
 **dwm**
-- [actualfullscreen]()
 - [adjacenttag](https://dwm.suckless.org/patches/adjacenttag)
 - [attachdirection](https://dwm.suckless.org/patches/attachdirection)
 - [cfacts-vanitygaps](https://dwm.suckless.org/patches/vanitygaps)
 - [fakefullscreen](https://dwm.suckless.org/patches/fakefullscreen)
-- [focusfullscreen]()
+- [fullscreen](https://dwm.suckless.org/patches/fullscreen)
 - [movestack](https://dwm.suckless.org/patches/movestack)
 - [pertag](https://dwm.suckless.org/patches/pertag)
 - [save floats](https://dwm.suckless.org/patches/save_floats)
 - [statuscmd](https://dwm.suckless.org/patches/statuscmd)
+- [systray](https://dwm.suckless.org/patches/systray)
 - [tiledmove](https://dwm.suckless.org/patches/tiledmove)
 - [unfloatvisible](https://dwm.suckless.org/patches/unfloatvisible)
 
@@ -40,35 +43,57 @@ Patches
 - [alsa master](https://tools.suckless.org/slstatus/patches/alsa-master)
 - [backlight](https://tools.suckless.org/slstatus/patches/backlight)
 - [battery notify](https://tools.suckless.org/slstatus/patches/battery-notify)
-- [signals](https://tools.suckless.org/slstatus/patches/signals)
 
 **st**
 - [alpha](https://st.suckless.org/patches/alpha)
 - [anysize](https://st.suckless.org/patches/anysize)
-- [scrollback mouse](https://st.suckless.org/patches/scrollback)
-- [scrollback ringbuffer](https://st.suckless.org/patches/scrollback)
+- [scrollback reflow standalone](https://st.suckless.org/patches/scrollback-reflow-standalone)
 - [single drawable buffer](https://git.suckless.org/st/file/FAQ.html)
 - [w3m](https://st.suckless.org/patches/w3m)
 
 
-Keybinds
---------
+Key Bindings
+------------
+- `MOD` : Modifier, Super key
+- `META` : Alt key, used for layouts
+- `CTL` : Control key, used for gaps
+- `SHIFT` : Shift key, alternate function
 
-Modifier
-- `MODKEY` = Super Key
-- `METAKEY` = Alt Key
+| Keys                                          | Functions                         |
+|-----------------------------------------------|-----------------------------------|
+| `MOD` + `b`                                   | toggle bar                        |
+| `MOD` + `q`                                   | close client                      |
+| `MOD` + `o`                                   | move client to master             |
+| `MOD` + `h` `l` \| `SHIFT` + `h` `l`          | resize master \| client           |
+| `MOD` + `j` `k` \| `SHIFT` + `j` `k`          | focus \| move stack               |
+| `MOD` + `i` \| `SHIFT` + `i`                  | change master stack               |
+| `MOD` + `tab`                                 | tag view                          |
+| `MOD` + `1` ... `9`                           | toggle tag                        |
+| `MOD` + `META` + `1` ... `9` \| `o`           | toggle \| reset layout            |
+| `MOD` + `META` + `SHIFT` + `p` \| `1` ... `9` | unfloat \| unfloat to layout      |
+| `MOD` + `META` + `p`                          | toggle floating                   |
+| `MOD` + `META`\|`SHIFT` + `i`                 | fullscreen \| focus fullscreen    |
+| `MOD` + `,` `.` \| `SHIFT` + `,` `.`          | focus \| tag monitor              |
+| `MOD` + `<-` `->`                             | view previous \| next tag         |
+| `MOD` + `SHIFT` + `<-` `->`                   | tag to previous \| next           |
+| `MOD` + `CTL` + `u` \| `SHIFT` + `u`          | all side gaps                     |
+| `MOD` + `CTL` + `i` `o` \| `SHIFT` + `i` `o`  | inner \| outer gaps               |
+| `MOD` + `CTL` + `h` `j` \| `SHIFT` + `h` `j`  | inner horizontal \| vertical gaps |
+| `MOD` + `CTL` + `k` `l` \| `SHIFT` + `k` `l`  | outer horizontal \| vertical gaps |
+| `MOD` + `CTL` + `p` \| `SHIFT` + `p`          | toggle \| default gaps            |
+| `MOD` + `n`                                   | dmenu                             |
+| `MOD` + `SHIFT` + `n`                         | st                                |
 
-|
-|                      Keys                      |    Trigger    |
-|:----------------------------------------------:|:-------------:|
-| `MODKEY` + `\`                                 | dmenu         |
-| `MODKEY` + `SHIFT` + `\`                       | st            |
-| `MODKEY` + `h` `l`                             | resize master |
-| `MODKEY` + `SHIFT` + `h` `l`                   | resize client |
-| `MODKEY` + `j` `k`                             | focus stack   |
-| `MODKEY` + `SHIFT` + `j` `k`                   | move stack    |
-| `MODKEY` + `1` `...` `9`                       | toggle tag    |
-| `MODKEY` + `SHIFT` + `1` `...` `9`             | toggle tag    |
-| `MODKEY` + `CONTROL` + `1` `...` `9`           | toggle tag    |
-| `MODKEY` + `CONTROL` + `SHIFT` + `1` `...` `9` | toggle tag    |
-| `MODKEY` + `METAKEY` + `1` `...` `9`           | toggle layout |
+
+Mouse Bindings
+--------------
+
+
+Gallery
+-------
+
+
+Related Links
+-------------
+not really related... but check out these links
+-
