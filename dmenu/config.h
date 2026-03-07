@@ -15,7 +15,7 @@ static int fuzzy  = 1;
 /* -fn option overrides fonts[0]; default X11 font set */
 /*******************************************************/
 static const char *fonts[] = {
-	"JetBrainsMono Nerd Font Mono:size=12"
+	"JetBrainsMono Nerd Font Mono:size=24"
 };
 
 /*******************************************************/
@@ -28,22 +28,22 @@ static const char *prompt = NULL;
 /*******************************************************/
 static const char *colors[SchemeLast][2] = {
 	/*                        foreground  background */
-	[SchemeNorm]          = { "#bbbbbb",  "#222222" },
-	[SchemeSel]           = { "#eeeeee",  "#005577" },
-	[SchemeSelHighlight]  = { "#ffc978",  "#005577" },
-	[SchemeNormHighlight] = { "#ffc978",  "#222222" },
+	[SchemeNorm]          = { "#a5adcb",  "#24273a" },
+	[SchemeSel]           = { "#cad3f5",  "#939ab7" },
+	[SchemeSelHighlight]  = { "#8aadf4",  "#939ab7" },
+	[SchemeNormHighlight] = { "#8aadf4",  "#24273a" },
 	[SchemeOut]           = { "#000000",  "#00ffff" },
 };
 
 /*******************************************************/
 /* -l options; number of lines in grid if > 0          */
 /*******************************************************/
-static unsigned int lines   = 10;
+static unsigned int lines   = 5;
 
 /*******************************************************/
 /* -g options; number of columns in grid if > 0        */
 /*******************************************************/
-static unsigned int columns = 3;
+static unsigned int columns = 6;
 
 /*******************************************************/
 /* Characters not considered part of a word            */
