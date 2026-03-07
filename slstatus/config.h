@@ -3,7 +3,7 @@
 /*********************************************/
 /* interval between updates (in ms)          */
 /*********************************************/
-const unsigned int interval = 1000;
+const unsigned int interval = 500;
 
 /*********************************************/
 /* text to show if no value can be retrieved */
@@ -13,7 +13,7 @@ static const char unknown_str[] = "N/A";
 /*********************************************/
 /* maximum command output length             */
 /*********************************************/
-#define CMDLEN 128
+#define MAXLEN 2048
 
 /*********************************************/
 /* battery levels to notify for (in percent) */
@@ -85,19 +85,14 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  *************************************************************************************/
 static const struct arg args[] = {
-	/* function         format        argument              turn  signal */
-  { wifi_perc,        "  %s ",     "wlp58s0",            1,    -1 },
-  { cpu_freq,         "  %s ",     NULL,                 1,    -1 },
-  { ram_total,        "  %s ",     NULL,                 1,    -1 },
-  { alsa_master_vol,  " 󰕾 %s ",     NULL,                 1,    -1 },
-  { backlight_perc,   " 󰃠 %s ",     "intel_backlight",    1,    -1 },
-  { battery_state,    "\x05 %s",    "BAT0",               1,    -1 },
-  { battery_perc,     " %s\x05 ",   "BAT0",               1,    -1 },
-  { battery_notify,   "",           "BAT0",               1,    -1 },
-  { datetime,         " 󰃭 %s ",     "%a %b %d %H:%M",     1,    -1 },
+  /* function			format			argument */
+  { wifi_perc,			"  %s ",		"wlp58s0" },
+  { cpu_freq,			"  %s ",		NULL },
+  { ram_total,			"  %s ",		NULL },
+  { alsa_master_vol,	" 󰕾 %s ",		NULL },
+  { backlight_perc,		" 󰃠 %s ",		"intel_backlight" },
+  { battery_state,		"\x05 %s",		"BAT0" },
+  { battery_perc,		" %s\x05 ",		"BAT0" },
+  { battery_notify,		"",				"BAT0" },
+  { datetime,			" 󰃭 %s ",		"%a %b %d %H:%M" },
 };
-
-/*********************************************/
-/* maximum output string length              */
-/*********************************************/
-#define MAXLEN CMDLEN * LEN(args)

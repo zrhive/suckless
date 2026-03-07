@@ -6,8 +6,8 @@ const unsigned int interval = 1000;
 /* text to show if no value can be retrieved */
 static const char unknown_str[] = "N/A";
 
-/* maximum command output length */
-#define CMDLEN 128
+/* maximum output string length */
+#define MAXLEN 2048
 
 /* battery levels to notify - add any levels you want to receive notification for (in percent) */
 const int notifiable_levels[] = {
@@ -80,12 +80,6 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  */
 static const struct arg args[] = {
 	/* function format          argument */
-	// { datetime, "%s",           "%F %T" },
-	// { battery_notify, "",       "BAT0" }, /* There is nothing to print its just a notifications*/
-
-	/* function     format          argument    turn    signal */
-	{ datetime,     "%s",           "%F %T",    1,       -1 },
+	{ datetime, "%s",           "%F %T" },
+	{ battery_notify, "",       "BAT0" }, /* There is nothing to print its just a notifications*/
 };
-
-/* maximum output string length */
-#define MAXLEN CMDLEN * LEN(args)
