@@ -164,8 +164,8 @@ static const Key keys[] = {
   { MODKEY|METAKEY|ShiftMask,       XK_7,         unfloatvisible,   {.v = &layouts[6]} },
   { MODKEY|METAKEY|ShiftMask,       XK_8,         unfloatvisible,   {.v = &layouts[7]} },
   { MODKEY|METAKEY|ShiftMask,       XK_9,         unfloatvisible,   {.v = &layouts[8]} },
-  { MODKEY|METAKEY,                 XK_i,         togglefullscr,    {0} },
-  { MODKEY|METAKEY,				          XK_u,         togglefullscreen, {0} },
+  { MODKEY|METAKEY,					XK_i,		  fullscreen,		{0} },
+  { MODKEY|METAKEY,				    XK_u,         togglefullscreen, {0} },
   /******* MONITOR *************************************************/
   { MODKEY,                         XK_comma,     focusmon,         {.i = -1 } },
   { MODKEY,                         XK_period,    focusmon,         {.i = +1 } },
@@ -176,9 +176,9 @@ static const Key keys[] = {
   { MODKEY|ShiftMask,               XK_0,         tag,              {.ui = ~0 } },
   { MODKEY,                         XK_Tab,       view,             {0} },
   { MODKEY,                         XK_Right,     viewnext,         {0} },
-	{ MODKEY,                         XK_Left,      viewprev,         {0} },
-	{ MODKEY|ShiftMask,               XK_Right,     tagtonext,        {0} },
-	{ MODKEY|ShiftMask,               XK_Left,      tagtoprev,        {0} },
+  { MODKEY,                         XK_Left,      viewprev,         {0} },
+  { MODKEY|ShiftMask,               XK_Right,     tagtonext,        {0} },
+  { MODKEY|ShiftMask,               XK_Left,      tagtoprev,        {0} },
   TAGKEYS(                          XK_1,                           0)
   TAGKEYS(                          XK_2,                           1)
   TAGKEYS(                          XK_3,                           2)
@@ -232,9 +232,9 @@ static const Button buttons[] = {
   { ClkLtSymbol,      0,            Button1,    setlayout,        {0} },
   { ClkLtSymbol,      0,            Button3,    setlayout,        {.v = &layouts[2]} },
   { ClkWinTitle,      0,            Button2,    zoom,             {0} },
-	{ ClkStatusText,    0,            Button1,    spawn,            {.v = statuscmd } },
-	{ ClkStatusText,    0,            Button2,    spawn,            {.v = statuscmd } },
-	{ ClkStatusText,    0,            Button3,    spawn,            {.v = statuscmd } },
+  { ClkStatusText,    0,            Button1,    spawn,            {.v = statuscmd } },
+  { ClkStatusText,    0,            Button2,    spawn,            {.v = statuscmd } },
+  { ClkStatusText,    0,            Button3,    spawn,            {.v = statuscmd } },
   { ClkClientWin,     MODKEY,       Button1,    movemouse,        {0} },
   { ClkClientWin,     MODKEY,       Button2,    togglefloating,   {0} },
   { ClkClientWin,     MODKEY,       Button3,    resizemouse,      {0} },
