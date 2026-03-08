@@ -18,7 +18,6 @@ static const int showsystray              = 1;  /* 0 means no systray */
 static const int showbar                  = 1;  /* 0 means no bar */
 static const int topbar                   = 1;  /* 0 means bottom bar */
 static const char *fonts[]                = { "JetBrainsMono Nerd Font:size=12" };
-static const char dmenufont[]             = "JetBrainsMono Nerd Font Mono:size=10";
 static const char col_rose[]              = "#f4dbd6";
 static const char col_pink[]              = "#f5bde6";
 static const char col_base[]              = "#24273a";
@@ -95,7 +94,7 @@ static const Layout layouts[] = {
 
 /***** COMMANDS DEFAULT ********/
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
 /***** AUDIO AND BACKLIGHT ****/
 static const char *volup[]    = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@",   "5%+", "-l", "1.0", NULL };

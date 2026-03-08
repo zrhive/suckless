@@ -15,7 +15,7 @@ static int fuzzy  = 1;
 /* -fn option overrides fonts[0]; default X11 font set */
 /*******************************************************/
 static const char *fonts[] = {
-	"JetBrainsMono Nerd Font Mono:size=24"
+	"JetBrainsMono Nerd Font Mono:size=14"
 };
 
 /*******************************************************/
