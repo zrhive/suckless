@@ -210,6 +210,11 @@ static Shortcut shortcuts[] = {
 };
 
 /*
+ * The amount of lines scrollback can hold before it wraps around.
+ */
+unsigned int scrollback_lines = 5000;
+
+/*
  * Special keys (change & recompile st.info accordingly)
  *
  * Mask value:
