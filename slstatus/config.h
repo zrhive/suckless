@@ -89,7 +89,7 @@ static const struct arg args[] = {
   { wifi_perc,			"  %s ",		"wlp58s0" },
   { cpu_freq,			"  %s ",		NULL },
   { ram_total,			"  %s ",		NULL },
-  { alsa_master_vol,	" 󰕾 %s ",		NULL },
+  { alsa_master_vol,	"%s",		NULL },
   { backlight_perc,		" 󰃠 %s ",		"intel_backlight" },
   { battery_state,		"\x05 %s",		"BAT0" },
   { battery_perc,		" %s\x05 ",		"BAT0" },

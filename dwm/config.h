@@ -3,7 +3,7 @@
 /*****************************************/
 /*              APPEARANCE               */
 /*****************************************/
-static const unsigned int borderpx        = 0;  /* border pixel of windows */
+static const unsigned int borderpx        = 2;  /* border pixel of windows */
 static const unsigned int snap            = 16; /* snap pixel */
 static const unsigned int gappih          = 20; /* horiz inner gap between windows */
 static const unsigned int gappiv          = 20; /* vert inner gap between windows */
@@ -18,16 +18,15 @@ static const int showsystray              = 1;  /* 0 means no systray */
 static const int showbar                  = 1;  /* 0 means no bar */
 static const int topbar                   = 1;  /* 0 means bottom bar */
 static const char *fonts[]                = { "JetBrainsMono Nerd Font:size=12" };
-static const char col_rose[]              = "#f4dbd6";
-static const char col_pink[]              = "#f5bde6";
+static const char col_text[]              = "#cad3f5";
+static const char col_blue[]              = "#8aadf4";
 static const char col_base[]              = "#24273a";
-static const char col_surface[]           = "#363a4f";
 static const char col_overlay[]           = "#6e738d";
 static const char col_lavender[]          = "#b7bdf8";
 static const char *colors[][3]            = {
   /*               foreground   background    border   */
-  [SchemeNorm] = { col_rose,    col_base,     col_overlay },
-  [SchemeSel]  = { col_pink,    col_base,  col_lavender  },
+  [SchemeNorm] = { col_text,    col_base,     col_overlay },
+  [SchemeSel]  = { col_blue,    col_base,     col_lavender  },
 };
 
 /*****************************************/
@@ -211,8 +210,6 @@ static const Key keys[] = {
 /*****************************************/
 /*          BUTTON DEFINITIONS           */
 /*****************************************/
-// #include "buttons/buttons.h"
-//#define STATUSBAR "slstatus" /* for statuscmd signal patch */
 /* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
 static const StatusCmd statuscmds[] = {
   /* function     identifier */
