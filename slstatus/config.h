@@ -91,8 +91,8 @@ static const struct arg args[] = {
   { ram_used,			    "  %s ",		  NULL,               10,   -1 },
   { alsa_master_vol,	" %s ",		    NULL,               60,    1 },
   { backlight_perc,		" %s ",		    "intel_backlight",  60,    2 },
-  { battery_state,		"\x05 %s",	  "BAT0",             10,   -1 },
-  { battery_perc,		  "%s\x05 ",	  "BAT0",             10,   -1 },
+  { battery_state,		"\x05 %s",	  "BAT0",             10,    5 },
+  { battery_perc,		  "%s\x05 ",	  "BAT0",             10,    5 },
   { battery_notify,		"",				    "BAT0",             10,   -1 },
   { datetime,			    " 󰃭 %s ",		  "%a %b %d %H:%M",   10,   -1 },
 };
