@@ -37,7 +37,7 @@ wireplumber(void)
     float volume;
     int perc;
 
-    static char *symbol[] = { "", "", "" };
+    static char *symbol[] = { "", "", "", };
 
     if (sscanf(tmp_buf, "Volume: %5s", vol_buf) == 1) {
       sscanf(vol_buf, "%f", &volume);

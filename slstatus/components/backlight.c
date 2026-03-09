@@ -14,7 +14,7 @@
 	backlight_perc(const char *card)
 	{
 		char path[PATH_MAX];
-		int max, cur;
+		int max, cur, perc;
 
 		if (esnprintf(path, sizeof (path), BRIGHTNESS_MAX, card) < 0 ||
 			pscanf(path, "%d", &max) != 1) {
@@ -30,8 +30,8 @@
 			return NULL;
 		}
 
-    static char *symbol[] = { "󰃞", "󰃟", "󰃠" }
-    int perc = cur * 100 / max;
+    static char *symbol[] = { "󰃞", "󰃟", "󰃠", };
+    perc = cur * 100 / max;
 
 		return bprintf("%s %d%%", symbol[perc / 34], perc);
 	}
