@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "../util.h"
 
-const char *pipewire_vol(void) {
+const char *alsa_master_vol(void) {
   // Volume: 0.65 [MUTED]
   FILE *fp = popen("wpctl get-volume @DEFAULT_AUDIO_SINK@", "r"); //20
 
@@ -28,7 +28,7 @@ const char *pipewire_vol(void) {
   }
 
   if (mute) {
-    return bsprintf("");
+    return bprintf("");
   }
   else {
     char vol_buf[6];
@@ -41,7 +41,7 @@ const char *pipewire_vol(void) {
       sscanf(vol_buf, "%f", &volume);
       int vol_percent = (int)(volume * 100);
 
-      return bsprint("%s", symbol[vol_percent / 25], vol_percent);
+      return bprint("%s", symbol[vol_percent / 25], vol_percent);
     }
   }
 }
