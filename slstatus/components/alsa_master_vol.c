@@ -18,7 +18,7 @@ const char *alsa_master_vol(void) {
 	pclose(fp);
 
   bool mute = false;
-  for (short b = 0; b < strlen(tmp_buf) - 6; b++) {
+  for (int b = 0; b < strlen(tmp_buf) - 6; b++) {
     if (tmp_buf[b] == '[') {
       if (strncmp(&tmp_buf[b], "[MUTED]", 7) == 0) {
         mute = true;
@@ -41,7 +41,7 @@ const char *alsa_master_vol(void) {
       sscanf(vol_buf, "%f", &volume);
       int vol_percent = (int)(volume * 100);
 
-      return bprint("%s", symbol[vol_percent / 25], vol_percent);
+      return bprintf("%s%d%%", symbol[vol_percent / 25], vol_percent);
     }
   }
 }
