@@ -30,7 +30,7 @@
 			return NULL;
 		}
 
-    static char *symbol[] { "󰃞", "󰃟", "󰃠" }
+    static char *symbol[] = { "󰃞", "󰃟", "󰃠" }
     int perc = cur * 100 / max;
 
 		return bprintf("%s %d%%", symbol[perc / 34], perc);
