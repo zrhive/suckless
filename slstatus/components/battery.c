@@ -54,6 +54,11 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
+		//   static char *symbol[] = {
+		//     "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
+		//   };
+		// return bprintf("%s %d%", symbol[cap_perc / 5], cap_perc);
+
 		return bprintf("%d", cap_perc);
 	}
 
