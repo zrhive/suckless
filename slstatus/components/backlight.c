@@ -33,7 +33,7 @@
     static char *symbol[] { "󰃞", "󰃟", "󰃠" }
     int perc = cur * 100 / max;
 
-		return bprintf("%s %d%%", symbol[result / 3], perc);
+		return bprintf("%s %d%%", symbol[perc / 34], perc);
 	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>

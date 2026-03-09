@@ -1,49 +1,69 @@
+/* Created by William Rabbermann */
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
 #include "../util.h"
 
-const char *
-alsa_master_vol(void)
-{
-  // Volume: 0.65 [MUTED]
-  FILE *fp = popen("wpctl get-volume @DEFAULT_AUDIO_SINK@", "r"); //20
+#define TMP_BUF_SIZE 14
+#define VOL_BUF_SIZE 5
 
-  char tmp_buf[25];
-  char ch;
-  unsigned short i = 0;
-	while ((ch = fgetc(fp)) != EOF && i < 24) {
-    tmp_buf[i++] = ch;
-  }
+const char *
+alsa_master_vol(const char *unused)
+{
+	bool MASTER_IS_MUTED = true;
+	char tmp_buf[TMP_BUF_SIZE];
+	short b;
+	unsigned short i = 0;
+
+	FILE *fp = popen("amixer get Master | tail -c13", "r");
+	char ch;
+	while ((ch = fgetc(fp)) != EOF && i < TMP_BUF_SIZE)
+		tmp_buf[i++] = ch;
 	tmp_buf[i] = '\0';
 	pclose(fp);
 
-  bool mute = false;
-  for (int b = 0; b < strlen(tmp_buf) - 6; b++) {
-    if (tmp_buf[b] == '[') {
-      if (strncmp(&tmp_buf[b], "[MUTED]", 7) == 0) {
-        mute = true;
-        break;
-      }
-    }
-  }
+	b = i - 1;
+	while (b >= 0)
+	{
+		if ('[' == tmp_buf[b])
+		{
+			if (tmp_buf[b+1] == 'o' && tmp_buf[b+2] == 'n')
+				MASTER_IS_MUTED = false;
+			b -= 3;
+			break;
+		}
+		b--;
+	}
 
-  if (mute) {
-    return bprintf("");
-  }
-  else {
-    char vol_buf[6];
-    float volume;
-    int vol_percent;
+	if (MASTER_IS_MUTED) return bprintf("");
+	else
+	{
+		char vol_buf[VOL_BUF_SIZE];
+		while (b >= 0)
+		{
+			if ('[' == tmp_buf[b])
+				break;
+			b--;
+		}
 
-    static char *symbol[] = { "", "", "" };
+		i = 0;
+		while (i < VOL_BUF_SIZE)
+		{
+			b++;
+			if (']' == tmp_buf[b])
+			{
+				vol_buf[i] = '\0';
+				break;
+			}
+			else
+				vol_buf[i++] = tmp_buf[b];
+		}
 
-    if (sscanf(tmp_buf, "Volume: %5s", vol_buf) == 1) {
-      sscanf(vol_buf, "%f", &volume);
-      int vol_percent = (int)(volume * 100);
+		// static char *symbol[] = {
+		// 	"", "", "",
+		// };
+		// return bprintf("%s%s%", symbol[vol_buf / 3], vol_buf);
 
-      return bprintf("%s %d%%", symbol[perc / 25], perc);
-    }
-  }
+		return bprintf("%s", vol_buf);
+	}
 }
