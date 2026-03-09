@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include "../util.h"
 
-const char *alsa_master_vol(void) {
+const char *
+alsa_master_vol(void)
+{
   // Volume: 0.65 [MUTED]
   FILE *fp = popen("wpctl get-volume @DEFAULT_AUDIO_SINK@", "r"); //20
 
@@ -41,7 +43,7 @@ const char *alsa_master_vol(void) {
       sscanf(vol_buf, "%f", &volume);
       int vol_percent = (int)(volume * 100);
 
-      return bprintf("%s%d%%", symbol[vol_percent / 25], vol_percent);
+      return bprintf("%s %d%%", symbol[perc / 25], perc);
     }
   }
 }

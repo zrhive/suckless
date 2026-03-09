@@ -3,7 +3,7 @@
 /*********************************************/
 /* interval between updates (in ms)          */
 /*********************************************/
-const unsigned int interval = 500;
+const unsigned int interval = 1000;
 
 /*********************************************/
 /* text to show if no value can be retrieved */
@@ -13,7 +13,7 @@ static const char unknown_str[] = "N/A";
 /*********************************************/
 /* maximum command output length             */
 /*********************************************/
-#define MAXLEN 2048
+#define CMDLEN 128
 
 /*********************************************/
 /* battery levels to notify for (in percent) */
@@ -85,14 +85,19 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  *************************************************************************************/
 static const struct arg args[] = {
-  /* function			format			argument */
-  { wifi_perc,			"  %s ",		"wlp58s0" },
-  { cpu_freq,			"  %s ",		NULL },
-  { ram_total,			"  %s ",		NULL },
-  { alsa_master_vol,	"%s",		NULL },
-  { backlight_perc,		" 󰃠 %s ",		"intel_backlight" },
-  { battery_state,		"\x05 %s",		"BAT0" },
-  { battery_perc,		" %s\x05 ",		"BAT0" },
-  { battery_notify,		"",				"BAT0" },
-  { datetime,			" 󰃭 %s ",		"%a %b %d %H:%M" },
+  /* function			    format			  argument            turn  signal */
+  { netspeed_rx,	    "  %s ",		  "wlp58s0",          10,   -1 },
+  { cpu_perc,			    "  %s%% ",		NULL,               10,   -1 },
+  { ram_used,			    "  %s ",		  NULL,               10,   -1 },
+  { alsa_master_vol,	" %s ",		    NULL,               60,    1 },
+  { backlight_perc,		" %s ",		    "intel_backlight",  60,    2 },
+  { battery_state,		"\x05 %s",	  "BAT0",             10,   -1 },
+  { battery_perc,		  "%s\x05 ",	  "BAT0",             10,   -1 },
+  { battery_notify,		"",				    "BAT0",             10,   -1 },
+  { datetime,			    " 󰃭 %s ",		  "%a %b %d %H:%M",   10,   -1 },
 };
+
+/*********************************************/
+/* maximum output string length              */
+/*********************************************/
+#define MAXLEN CMDLEN * LEN(args)

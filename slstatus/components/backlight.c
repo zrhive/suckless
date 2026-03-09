@@ -30,7 +30,10 @@
 			return NULL;
 		}
 
-		return bprintf("%d%%", cur * 100 / max);
+    static char *symbol[] { "󰃞", "󰃟", "󰃠" }
+    int perc = cur * 100 / max;
+
+		return bprintf("%s %d%%", symbol[result / 3], perc);
 	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>

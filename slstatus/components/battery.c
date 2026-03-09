@@ -59,7 +59,7 @@
 		//   };
 		// return bprintf("%s %d%", symbol[cap_perc / 5], cap_perc);
 
-		return bprintf("%d", cap_perc);
+		return bprintf("%d%%", cap_perc);
 	}
 
 const char *battery_notify(const char *bat)
