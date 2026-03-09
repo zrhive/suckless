@@ -29,8 +29,8 @@ static const char *prompt = NULL;
 static const char *colors[SchemeLast][2] = {
 	/*                        foreground  background */
 	[SchemeNorm]          = { "#a5adcb",  "#24273a" },
-	[SchemeSel]           = { "#cad3f5",  "#939ab7" },
-	[SchemeSelHighlight]  = { "#8aadf4",  "#939ab7" },
+	[SchemeSel]           = { "#cad3f5",  "#363a4f" },
+	[SchemeSelHighlight]  = { "#8aadf4",  "#363a4f" },
 	[SchemeNormHighlight] = { "#8aadf4",  "#24273a" },
 	[SchemeOut]           = { "#000000",  "#00ffff" },
 };
@@ -38,12 +38,12 @@ static const char *colors[SchemeLast][2] = {
 /*******************************************************/
 /* -l options; number of lines in grid if > 0          */
 /*******************************************************/
-static unsigned int lines   = 5;
+static unsigned int lines   = 3;
 
 /*******************************************************/
 /* -g options; number of columns in grid if > 0        */
 /*******************************************************/
-static unsigned int columns = 6;
+static unsigned int columns = 4;
 
 /*******************************************************/
 /* Characters not considered part of a word            */
