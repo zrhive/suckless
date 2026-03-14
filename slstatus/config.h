@@ -81,6 +81,7 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  * alsa_master_vol     ALSA Master device volume       NULL
  * vol_perc            OSS/ALSA volume in percent      mixer file (/dev/mixer)
  *                                                     NULL on OpenBSD/FreeBSD
+ * wireplumber         WirePlumber default audio sink  NULL
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  *************************************************************************************/
@@ -89,7 +90,7 @@ static const struct arg args[] = {
   { netspeed_rx,	    "  %s ",		  "wlp58s0",          10,   -1 },
   { cpu_perc,			    "  %s%% ",		NULL,               10,   -1 },
   { ram_used,			    "  %s ",		  NULL,               10,   -1 },
-  { alsa_master_vol,	" %s ",		    NULL,               60,    1 },
+  { wireplumber,	    " %s ",		    NULL,               60,    1 },
   { backlight_perc,		" %s ",		    "intel_backlight",  60,    2 },
   { battery_state,		"\x05 %s",	  "BAT0",             10,    5 },
   { battery_perc,		  "%s\x05 ",	  "BAT0",             10,    5 },

@@ -4,9 +4,7 @@
 #include <stdlib.h>
 #include "../util.h"
 
-const char *
-wireplumber(void)
-{
+const char *wireplumber(void) {
   // Volume: 0.65 [MUTED]
   FILE *fp = popen("wpctl get-volume @DEFAULT_AUDIO_SINK@", "r"); //20
 
@@ -29,9 +27,7 @@ wireplumber(void)
     }
   }
 
-  if (mute) {
-    return bprintf("");
-  }
+  if (mute) return bprintf("");
   else {
     char vol_buf[6];
     float volume;
@@ -39,7 +35,8 @@ wireplumber(void)
 
     static char *symbol[] = { "", "", "", };
 
-    if (sscanf(tmp_buf, "Volume: %5s", vol_buf) == 1) {
+    // if (sscanf(tmp_buf, "Volume: %5s", vol_buf) == 1) {
+    if (sscanf(tmp_buf, "Volume: %s", vol_buf) == 1) {
       sscanf(vol_buf, "%f", &volume);
       int perc = (int)(volume * 100);
 

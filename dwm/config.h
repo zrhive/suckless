@@ -106,8 +106,10 @@ static const char *litdown[]  = { "light", "-U", "5", NULL };
 static const char *kittycmd[]   = { "kitty", NULL };
 static const char *roficombi[]  = { "rofi", "-show", "combi", NULL };
 static const char *rofidrun[]   = { "rofi", "-show", "drun", NULL };
-static const char *yazifile[]   = { "kitty", "-e", "yazi", NULL };
-static const char *nvimstart[]  = { "kitty", "-e", "nvim", NULL };
+static const char *yazifile[]   = { "yazi", NULL };
+static const char *nvimstart[]  = { "nvim", NULL };
+static const char *flamegui[]   = { "flameshot", "gui", NULL };
+static const char *flamescreen[] = { "flameshot", "screen", NULL };
 
 static const Key keys[] = {
   /* modifier                       key           function              argument */
@@ -205,6 +207,8 @@ static const Key keys[] = {
   { MODKEY,           XK_e,         spawn,  {.v = rofidrun  } },
   { MODKEY,           XK_y,         spawn,  {.v = yazifile  } },
   { MODKEY,           XK_v,         spawn,  {.v = nvimstart } },
+  { MODKEY,           XK_Print,     spawn,  {.v = flamescreen } },
+  { MODKEY|ShiftMask, XK_Print,     spawn,  {.v = flamegui } },
 };
 
 /*****************************************/
@@ -214,8 +218,8 @@ static const Key keys[] = {
 static const StatusCmd statuscmds[] = {
   /* function     identifier */
 	{ "hello",    5 },
-	// { backlight,    2 },
-	// { batt_cap,     3 },
+	{ "hello",    2 },
+	{ "hello",     1 },
 	// { datetime,     4 },
 	// { network,      4 },
 	// { cpu_perc,     4 },

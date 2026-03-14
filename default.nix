@@ -9,7 +9,6 @@ let
   st        = pkgs.st.overrideAttrs { src = ./st; };
   cfg       = config.suckless;
 in
-
 {
   options.suckless = {
     dwm = mkEnableOption "dwm";
@@ -25,15 +24,12 @@ in
         package = dwm;
       };
     })
-
     (mkIf cfg.dmenu {
       environment.systemPackages = [ dmenu ];
     })
-
     (mkIf cfg.st {
       environment.systemPackages = [ st ];
     })
-
     (mkIf cfg.slstatus {
       environment.systemPackages = [ slstatus ];
       services.xserver.windowManager.dwm = {
