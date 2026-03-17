@@ -1,13 +1,18 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
 
-  dwm       = pkgs.dwm.overrideAttrs { src = ./dwm; };
-  slstatus  = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
-  dmenu     = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-  st        = pkgs.st.overrideAttrs { src = ./st; };
-  cfg       = config.suckless;
+  dwm = pkgs.dwm.overrideAttrs { src = ./dwm; };
+  slstatus = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
+  dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
+  st = pkgs.st.overrideAttrs { src = ./st; };
+  cfg = config.suckless;
 in
 {
   options.suckless = {
