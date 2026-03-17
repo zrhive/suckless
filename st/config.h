@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+/* clang-format off */
+
 /*
  * appearance
  *
@@ -160,7 +162,7 @@ static unsigned int rows = 24;
 /*
  * Default colour and shape of the mouse cursor
  */
-static unsigned int mouseshape = XC_xterm;
+static unsigned int mouseshape = XC_left_ptr;
 static unsigned int mousefg = 7;
 static unsigned int mousebg = 0;
 
@@ -208,10 +210,6 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,        XK_Y,             selpaste,         {.i =  0} },
 	{ ShiftMask,      XK_Insert,        selpaste,         {.i =  0} },
 	{ TERMMOD,        XK_Num_Lock,      numlock,          {.i =  0} },
-  { ShiftMask,      XK_Page_Up,       kscrollup,        {.i = -1} },
-	{ ShiftMask,      XK_Page_Down,     kscrolldown,      {.i = -1} },
-	{ ShiftMask,      XK_Home,          kscrollup,        {.i = 1000000} },
-	{ ShiftMask,      XK_End,           kscrolldown,      {.i = 1000000} },
 };
 
 /*
