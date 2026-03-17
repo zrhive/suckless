@@ -20,6 +20,7 @@
  *
  * To understand everything else, start reading main().
  */
+/* clang-format off */
 #include <errno.h>
 #include <locale.h>
 #include <signal.h>
@@ -30,7 +31,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -40,6 +40,7 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
+#include <X11/Xcursor/Xcursor.h>
 
 #include "drw.h"
 #include "util.h"
@@ -220,7 +221,7 @@ static void grabkeys(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
-static void losefullscreen(Client *next);
+static void losefullscreen(Client *sel, Client *next);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
@@ -264,7 +265,6 @@ static void tagtoprev(const Arg *arg);
 static void togglebar(const Arg *arg);
 static void togglefakefullscreen(const Arg *arg);
 static void togglefloating(const Arg *arg);
-static void togglefullscreen(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -740,12 +740,9 @@ clientmessage(XEvent *e)
 		return;
 	if (cme->message_type == netatom[NetWMState]) {
 		if (cme->data.l[1] == netatom[NetWMFullscreen]
-		|| cme->data.l[2] == netatom[NetWMFullscreen]) {
-			if (c->fakefullscreen == 2 && c->isfullscreen)
-				c->fakefullscreen = 3;
+		|| cme->data.l[2] == netatom[NetWMFullscreen])
 			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
 				|| (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->isfullscreen)));
-		}
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
 		if (c != selmon->sel && !c->isurgent)
 			seturgent(c, 1);
@@ -1060,10 +1057,8 @@ focus(Client *c)
 {
 	if (!c || !ISVISIBLE(c))
 		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
-	if (selmon->sel && selmon->sel != c) {
-		losefullscreen(c);
+	if (selmon->sel && selmon->sel != c)
 		unfocus(selmon->sel, 0);
-	}
 	if (c) {
 		if (c->mon != selmon)
 			selmon = c->mon;
@@ -1111,7 +1106,7 @@ focusstack(const Arg *arg)
 {
 	Client *c = NULL, *i;
 
-	if (!selmon->sel || (selmon->sel->isfullscreen && selmon->sel->fakefullscreen != 1))
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
 		return;
 	if (arg->i > 0) {
 		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
@@ -1127,6 +1122,7 @@ focusstack(const Arg *arg)
 					c = i;
 	}
 	if (c) {
+		losefullscreen(selmon->sel, c);
 		focus(c);
 		restack(selmon);
 	}
@@ -1319,12 +1315,11 @@ killclient(const Arg *arg)
 }
 
 void
-losefullscreen(Client *next)
+losefullscreen(Client *sel, Client *next)
 {
-	Client *sel = selmon->sel;
 	if (!sel || !next)
 		return;
-	if (sel->isfullscreen && sel->fakefullscreen != 1 && ISVISIBLE(sel) && sel->mon == next->mon && !next->isfloating)
+	if (sel->isfullscreen && ISVISIBLE(sel) && sel->mon == next->mon && !next->isfloating)
 		setfullscreen(sel, 0);
 }
 
@@ -1404,7 +1399,7 @@ manage(Window w, XWindowAttributes *wa)
 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
 	setclientstate(c, NormalState);
 	if (c->mon == selmon) {
-		losefullscreen(c);
+		losefullscreen(selmon->sel, c);
 		unfocus(selmon->sel, 0);
 	}
 	c->mon->sel = c;
@@ -1762,7 +1757,10 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
-	XSync(dpy, False);
+	if (c->fakefullscreen == 1)
+		XSync(dpy, True);
+	else
+		XSync(dpy, False);
 }
 
 void
@@ -1990,79 +1988,35 @@ setfocus(Client *c)
 void
 setfullscreen(Client *c, int fullscreen)
 {
-	XEvent ev;
-	int savestate = 0, restorestate = 0, restorefakefullscreen = 0;
-
-	if ((c->fakefullscreen == 0 && fullscreen && !c->isfullscreen) // normal fullscreen
-			|| (c->fakefullscreen == 2 && fullscreen)) // fake fullscreen --> actual fullscreen
-		savestate = 1; // go actual fullscreen
-	else if ((c->fakefullscreen == 0 && !fullscreen && c->isfullscreen) // normal fullscreen exit
-			|| (c->fakefullscreen >= 2 && !fullscreen)) // fullscreen exit --> fake fullscreen
-		restorestate = 1; // go back into tiled
-
-	/* If leaving fullscreen and the window was previously fake fullscreen (2), then restore
-	 * that while staying in fullscreen. The exception to this is if we are in said state, but
-	 * the client itself disables fullscreen (3) then we let the client go out of fullscreen
-	 * while keeping fake fullscreen enabled (as otherwise there will be a mismatch between the
-	 * client and the window manager's perception of the client's fullscreen state). */
-	if (c->fakefullscreen == 2 && !fullscreen && c->isfullscreen) {
-		restorefakefullscreen = 1;
+	if (fullscreen && !c->isfullscreen) {
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+			PropModeReplace, (unsigned char*)&netatom[NetWMFullscreen], 1);
 		c->isfullscreen = 1;
-		fullscreen = 1;
-	}
-
-	if (fullscreen != c->isfullscreen) { // only send property change if necessary
-		if (fullscreen)
-			XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
-				PropModeReplace, (unsigned char*)&netatom[NetWMFullscreen], 1);
-		else
-			XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
-				PropModeReplace, (unsigned char*)0, 0);
-	}
-
-	c->isfullscreen = fullscreen;
-
-	/* Some clients, e.g. firefox, will send a client message informing the window manager
-	 * that it is going into fullscreen after receiving the above signal. This has the side
-	 * effect of this function (setfullscreen) sometimes being called twice when toggling
-	 * fullscreen on and off via the window manager as opposed to the application itself.
-	 * To protect against obscure issues where the client settings are stored or restored
-	 * when they are not supposed to we add an additional bit-lock on the old state so that
-	 * settings can only be stored and restored in that precise order. */
-	if (savestate && !(c->oldstate & (1 << 1))) {
 		c->oldbw = c->bw;
-		c->oldstate = c->isfloating | (1 << 1);
+		if (c->fakefullscreen == 1)
+			return;
+		c->oldstate = c->isfloating;
 		c->bw = 0;
 		c->isfloating = 1;
 		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
-	} else if (restorestate && (c->oldstate & (1 << 1))) {
+	} else if (!fullscreen && c->isfullscreen){
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+			PropModeReplace, (unsigned char*)0, 0);
+		c->isfullscreen = 0;
 		c->bw = c->oldbw;
-		c->isfloating = c->oldstate = c->oldstate & 1;
-		if (restorefakefullscreen || c->fakefullscreen == 3)
+		if (c->fakefullscreen == 1)
+			return;
+		if (c->fakefullscreen == 2)
 			c->fakefullscreen = 1;
-		/* The client may have been moved to another monitor whilst in fullscreen which if tiled
-		 * we address by doing a full arrange of tiled clients. If the client is floating then the
-		 * height and width may be larger than the monitor's window area, so we cap that by
-		 * ensuring max / min values. */
-		if (c->isfloating) {
-			c->x = MAX(c->mon->wx, c->oldx);
-			c->y = MAX(c->mon->wy, c->oldy);
-			c->w = MIN(c->mon->ww - c->x - 2*c->bw, c->oldw);
-			c->h = MIN(c->mon->wh - c->y - 2*c->bw, c->oldh);
-			resizeclient(c, c->x, c->y, c->w, c->h);
-			restack(c->mon);
-		} else
-			arrange(c->mon);
-	} else
+		c->isfloating = c->oldstate;
+		c->x = c->oldx;
+		c->y = c->oldy;
+		c->w = c->oldw;
+		c->h = c->oldh;
 		resizeclient(c, c->x, c->y, c->w, c->h);
-
-	/* Exception: if the client was in actual fullscreen and we exit out to fake fullscreen
-	 * mode, then the focus would sometimes drift to whichever window is under the mouse cursor
-	 * at the time. To avoid this we ask X for all EnterNotify events and just ignore them.
-	 */
-	if (!c->isfullscreen)
-		while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+		arrange(c->mon);
+	}
 }
 
 void
@@ -2163,9 +2117,9 @@ setup(void)
 	xatom[Xembed] = XInternAtom(dpy, "_XEMBED", False);
 	xatom[XembedInfo] = XInternAtom(dpy, "_XEMBED_INFO", False);
 	/* init cursors */
-	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
-	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
-	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
+	cursor[CurNormal] = drw_cur_create(drw, "left_ptr");
+	cursor[CurResize] = drw_cur_create(drw, "se-resize");
+	cursor[CurMove]   = drw_cur_create(drw, "fleur");
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
@@ -2275,19 +2229,9 @@ tag(const Arg *arg)
 void
 tagmon(const Arg *arg)
 {
-	Client *c = selmon->sel;
-	if (!c || !mons->next)
+	if (!selmon->sel || !mons->next)
 		return;
-	if (c->isfullscreen) {
-		c->isfullscreen = 0;
-		sendmon(c, dirtomon(arg->i));
-		c->isfullscreen = 1;
-		if (c->fakefullscreen != 1) {
-			resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
-			XRaiseWindow(dpy, c->win);
-		}
-	} else
-		sendmon(c, dirtomon(arg->i));
+	sendmon(selmon->sel, dirtomon(arg->i));
 }
 
 void
@@ -2347,54 +2291,55 @@ togglefakefullscreen(const Arg *arg)
 	if (!c)
 		return;
 
-	if (c->fakefullscreen != 1 && c->isfullscreen) { // exit fullscreen --> fake fullscreen
-		c->fakefullscreen = 2;
-		setfullscreen(c, 0);
-	} else if (c->fakefullscreen == 1) {
-		setfullscreen(c, 0);
-		c->fakefullscreen = 0;
+	if (c->fakefullscreen) {
+		if (c->isfullscreen) {
+			if (c->isfloating && c->fakefullscreen == 1) {
+				c->oldstate = c->isfloating;
+				c->oldx = c->x;
+				c->oldy = c->y;
+				c->oldw = c->w;
+				c->oldh = c->h;
+			}
+			c->fakefullscreen = 0;
+		}
+		else
+			c->isfullscreen = 0;
 	} else {
 		c->fakefullscreen = 1;
-		setfullscreen(c, 1);
+		if (c->isfullscreen) {
+			c->isfloating = c->oldstate;
+			c->bw = c->oldbw;
+			c->x = c->oldx;
+			c->y = c->oldy;
+			c->w = c->oldw;
+			c->h = c->oldh;
+			resizeclient(c, c->x, c->y, c->w, c->h);
+		}
+		c->isfullscreen = 0;
 	}
+	setfullscreen(c, !c->isfullscreen);
 }
 
 void
 togglefloating(const Arg *arg)
 {
-  Client *c = selmon->sel;
-	if (!c)
+	if (!selmon->sel)
 		return;
-  if (c->isfullscreen && c->fakefullscreen != 1) /* no support for fullscreen windows */
+	if (selmon->sel->isfullscreen && selmon->sel->fakefullscreen != 1) /* no support for fullscreen windows */
 		return;
-  c->isfloating = !c->isfloating || c->isfixed;
-  if (c->isfloating)
-	  // resize(c, c->x, c->y, c->w, c->h, 0);
+  selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
+  if (selmon->sel->isfloating)
 		/*restore last known float dimensions*/
-    resize(c, c->sfx, c->sfy, c->sfw, c->sfh, 0);
+    resize(selmon->sel, selmon->sel->sfx, selmon->sel->sfy,
+            selmon->sel->sfw, selmon->sel->sfh, False);
 	else {
 		/*save last known float dimensions*/
-		c->sfx = c->x;
-		c->sfy = c->y;
-		c->sfw = c->w;
-		c->sfh = c->h;
+		selmon->sel->sfx = selmon->sel->x;
+		selmon->sel->sfy = selmon->sel->y;
+		selmon->sel->sfw = selmon->sel->w;
+		selmon->sel->sfh = selmon->sel->h;
 	}
-  // arrange(selmon);
-  arrange(c->mon);
-}
-
-void
-togglefullscreen(const Arg *arg)
-{
-	Client *c = selmon->sel;
-	if (!c)
-		return;
-
-	if (c->fakefullscreen == 1) { // fake fullscreen --> fullscreen
-		c->fakefullscreen = 2;
-		setfullscreen(c, 1);
-	} else
-		setfullscreen(c, !c->isfullscreen);
+  arrange(selmon);
 }
 
 void

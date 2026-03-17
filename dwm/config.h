@@ -1,4 +1,6 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
+
 
 /*****************************************/
 /*              APPEARANCE               */
@@ -106,8 +108,8 @@ static const char *litdown[]  = { "light", "-U", "5", NULL };
 static const char *kittycmd[]   = { "kitty", NULL };
 static const char *roficombi[]  = { "rofi", "-show", "combi", NULL };
 static const char *rofidrun[]   = { "rofi", "-show", "drun", NULL };
-static const char *yazifile[]   = { "yazi", NULL };
-static const char *nvimstart[]  = { "nvim", NULL };
+static const char *yazifile[]   = { "kitty", "-e", "yazi", NULL };
+static const char *nvimstart[]  = { "kitty", "nvim", NULL };
 static const char *flamegui[]   = { "flameshot", "gui", NULL };
 static const char *flamescreen[] = { "flameshot", "screen", NULL };
 
@@ -157,9 +159,9 @@ static const Key keys[] = {
   { MODKEY|METAKEY,                 XK_7,         setlayout,            {.v = &layouts[6]} },
   { MODKEY|METAKEY,                 XK_8,         setlayout,            {.v = &layouts[7]} },
   { MODKEY|METAKEY,                 XK_9,         setlayout,            {.v = &layouts[8]} },
-  { MODKEY|METAKEY,                 XK_o,         setlayout,            {0} },
-  { MODKEY|METAKEY,                 XK_p,         togglefloating,       {0} },
-  { MODKEY|METAKEY|ShiftMask,       XK_p,         unfloatvisible,       {0} },
+  { MODKEY|METAKEY,                 XK_p,         setlayout,            {0} },
+  { MODKEY|METAKEY,                 XK_o,         togglefloating,       {0} },
+  { MODKEY|METAKEY|ShiftMask,       XK_o,         unfloatvisible,       {0} },
   { MODKEY|METAKEY|ShiftMask,       XK_1,         unfloatvisible,       {.v = &layouts[0]} },
   { MODKEY|METAKEY|ShiftMask,       XK_2,         unfloatvisible,       {.v = &layouts[1]} },
   { MODKEY|METAKEY|ShiftMask,       XK_3,         unfloatvisible,       {.v = &layouts[2]} },
@@ -169,8 +171,7 @@ static const Key keys[] = {
   { MODKEY|METAKEY|ShiftMask,       XK_7,         unfloatvisible,       {.v = &layouts[6]} },
   { MODKEY|METAKEY|ShiftMask,       XK_8,         unfloatvisible,       {.v = &layouts[7]} },
   { MODKEY|METAKEY|ShiftMask,       XK_9,         unfloatvisible,       {.v = &layouts[8]} },
-  { MODKEY,                         XK_f,         togglefullscreen,     {0} },
-	{ MODKEY|ShiftMask,               XK_f,         togglefakefullscreen, {0} },
+	{ MODKEY|METAKEY,                 XK_i,         togglefakefullscreen, {0} },
   /******* MONITOR *****************************************************/
   { MODKEY,                         XK_comma,     focusmon,             {.i = -1 } },
   { MODKEY,                         XK_period,    focusmon,             {.i = +1 } },
@@ -195,20 +196,20 @@ static const Key keys[] = {
   TAGKEYS(                          XK_9,                               8)
   { MODKEY|ShiftMask,               XK_Escape,    quit,                 {0} },
   /******* AUDIO AND BACKLIGHT CONTROL *********************************/
-  { 0,                XF86XK_AudioRaiseVolume,    spawn,  {.v = volup } },
-  { 0,                XF86XK_AudioLowerVolume,    spawn,  {.v = voldown } },
-  { 0,                XF86XK_AudioMute,           spawn,  {.v = volmute } },
-  { 0,                XF86XK_AudioMicMute,        spawn,  {.v = micmute } },
-  { 0,                XF86XK_MonBrightnessUp,     spawn,  {.v = litup } },
-  { 0,                XF86XK_MonBrightnessDown,   spawn,  {.v = litdown } },
+  { 0,                  XF86XK_AudioRaiseVolume,    spawn,  {.v = volup } },
+  { 0,                  XF86XK_AudioLowerVolume,    spawn,  {.v = voldown } },
+  { 0,                  XF86XK_AudioMute,           spawn,  {.v = volmute } },
+  { 0,                  XF86XK_AudioMicMute,        spawn,  {.v = micmute } },
+  { 0,                  XF86XK_MonBrightnessUp,     spawn,  {.v = litup } },
+  { 0,                  XF86XK_MonBrightnessDown,   spawn,  {.v = litdown } },
   /******* PROGRAMS AND SERVICES ***************************************/
-  { MODKEY,           XK_t,         spawn,  {.v = kittycmd  } },
-  { MODKEY,           XK_r,         spawn,  {.v = roficombi } },
-  { MODKEY,           XK_e,         spawn,  {.v = rofidrun  } },
-  { MODKEY,           XK_y,         spawn,  {.v = yazifile  } },
-  { MODKEY,           XK_v,         spawn,  {.v = nvimstart } },
-  { MODKEY,           XK_Print,     spawn,  {.v = flamescreen } },
-  { MODKEY|ShiftMask, XK_Print,     spawn,  {.v = flamegui } },
+  { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
+  { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
+  { MODKEY,             XK_e,         spawn,  {.v = rofidrun  } },
+  { MODKEY,             XK_y,         spawn,  {.v = yazifile  } },
+  { MODKEY,             XK_v,         spawn,  {.v = nvimstart } },
+  { MODKEY,             XK_Print,     spawn,  {.v = flamescreen } },
+  { MODKEY|METAKEY,     XK_Print,     spawn,  {.v = flamegui } },
 };
 
 /*****************************************/

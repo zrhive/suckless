@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
 
 /* appearance */
 static const unsigned int borderpx        = 1;        /* border pixel of windows */
@@ -135,10 +136,10 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,             XK_f,      togglefakefullscreen, {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
   { MODKEY|ShiftMask,             XK_f,      unfloatvisible, {0} },
 	{ MODKEY|ShiftMask,             XK_t,      unfloatvisible, {.v = &layouts[0]} },
-  { MODKEY,                       XK_f,      togglefullscreen, {0} },
 	{ MODKEY|ShiftMask,             XK_f,      togglefakefullscreen, {0} },
   { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
