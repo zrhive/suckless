@@ -8,7 +8,10 @@
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
 
-  dwm = pkgs.dwm.overrideAttrs { src = ./dwm; };
+  dwm = pkgs.dwm.overrideAttrs (oldAttrs: {
+    src = ./dwm;
+    buildInputs = oldAttrs.buildInputs ++ [ pkgs.libxcursor ];
+  });
   slstatus = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
   dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
   st = pkgs.st.overrideAttrs { src = ./st; };
