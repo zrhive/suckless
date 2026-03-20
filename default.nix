@@ -4,17 +4,22 @@
   pkgs,
   ...
 }:
-
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
 
-  dwm = pkgs.dwm.overrideAttrs (oldAttrs: {
+  dwm = pkgs.dwm.overrideAttrs (old: {
     src = ./dwm;
-    buildInputs = oldAttrs.buildInputs ++ [ pkgs.libxcursor ];
+    buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
   });
-  slstatus = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
+
+  st = pkgs.st.overrideAttrs (old: {
+    src = ./st;
+    buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
+  });
+
   dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-  st = pkgs.st.overrideAttrs { src = ./st; };
+  slstatus = pkgs.st.overrideAttrs { src = ./slstatus; };
+
   cfg = config.suckless;
 in
 {
@@ -32,12 +37,15 @@ in
         package = dwm;
       };
     })
+
     (mkIf cfg.dmenu {
       environment.systemPackages = [ dmenu ];
     })
+
     (mkIf cfg.st {
       environment.systemPackages = [ st ];
     })
+
     (mkIf cfg.slstatus {
       environment.systemPackages = [ slstatus ];
       services.xserver.windowManager.dwm = {
