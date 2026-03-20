@@ -29,8 +29,7 @@ COM =\
 	components/uptime\
 	components/user\
 	components/volume\
-	components/wifi\
-	components/wireplumber
+	components/wifi
 
 all: slstatus
 

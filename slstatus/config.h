@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
 
 /*********************************************/
 /* interval between updates (in ms)          */
@@ -18,7 +19,7 @@ static const char unknown_str[] = "N/A";
 /*********************************************/
 /* battery levels to notify for (in percent) */
 /*********************************************/
-const int notifiable_levels[] = { 20, 10, 8 };
+const int notifiable_levels[] = { 20, 15, 10, 8, 6 };
 const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifiable_levels[0]);
 
 /*************************************************************************************/
@@ -81,21 +82,20 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  * alsa_master_vol     ALSA Master device volume       NULL
  * vol_perc            OSS/ALSA volume in percent      mixer file (/dev/mixer)
  *                                                     NULL on OpenBSD/FreeBSD
- * wireplumber         WirePlumber default audio sink  NULL
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  *************************************************************************************/
 static const struct arg args[] = {
-  /* function			    format			  argument            turn  signal */
-  { netspeed_rx,	    "  %s ",		  "wlp58s0",          10,   -1 },
-  { cpu_perc,			    "  %s%% ",		NULL,               10,   -1 },
-  { ram_used,			    "  %s ",		  NULL,               10,   -1 },
-  { wireplumber,	    " %s ",		    NULL,               60,    1 },
-  { backlight_perc,		" %s ",		    "intel_backlight",  60,    2 },
-  { battery_state,		"\x05 %s",	  "BAT0",             10,    5 },
-  { battery_perc,		  "%s\x05 ",	  "BAT0",             10,    5 },
-  { battery_notify,		"",				    "BAT0",             10,   -1 },
-  { datetime,			    " 󰃭 %s ",		  "%a %b %d %H:%M",   10,   -1 },
+  /* function			    format			        argument            turn  signal */
+  { netspeed_rx,	    "\x07 󱚶 %s \x07",		"wlp58s0",          5,    -1 },
+  { cpu_perc,			    "\x06  %s%% \x06",	NULL,               5,    -1 },
+  { ram_perc,			    "\x05  %s \x05",		NULL,               5,    -1 },
+  { run_command,	    "\x04 %s%% \x04",		"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '/Volume:/ {print int($2*100)}'", 30,    4 },
+  { backlight_perc,		"\x03 %s \x03",		  "intel_backlight",  30,    3 },
+  { battery_state,		"\x02 %s ",	        "BAT0",             10,    2 },
+  { battery_perc,		  "%s \x02",	        "BAT0",             10,    2 },
+  { battery_notify,		"",				          "BAT0",             10,   -1 },
+  { datetime,			    "\x01 󰃭 %s \x01",		"%b %d %H:%M (%a)", 10,   -1 },
 };
 
 /*********************************************/

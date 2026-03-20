@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
 
 /* interval between updates (in ms) */
 const unsigned int interval = 1000;
@@ -75,7 +76,6 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  * alsa_master_vol     ALSA Master device volume       NULL
  * vol_perc            OSS/ALSA volume in percent      mixer file (/dev/mixer)
  *                                                     NULL on OpenBSD/FreeBSD
- * wireplumber         WirePlumber default audio sink  NULL
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
