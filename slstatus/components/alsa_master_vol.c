@@ -60,11 +60,11 @@ alsa_master_vol(const char *unused)
 				vol_buf[i++] = tmp_buf[b];
 		}
 
-		static char *vol_symbol[] = {
-			"", "", "",
-		};
-		return bprintf("%s %s%%", vol_symbol[vol_buf / 34], vol_buf);
+		// static char *vol_symbol[] = {
+		// 	"", "", "",
+		// };
+		// return bprintf("%s %s%%", vol_symbol[vol_buf / 34], vol_buf);
 
-		// return bprintf("%s", vol_buf);
+		return bprintf("%s", vol_buf);
 	}
 }
