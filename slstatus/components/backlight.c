@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-
+/* clang-format off */
 #include <stddef.h>
 
 #include "../util.h"
@@ -30,10 +30,10 @@
 			return NULL;
 		}
 
-    static char *symbol[] = { "󰃞", "󰃟", "󰃠", };
+    static char *light_symbol[] = { "󰃞", "󰃟", "󰃠", "󰃚", };
     perc = cur * 100 / max;
 
-		return bprintf("%s %d%%", symbol[perc / 34], perc);
+		return bprintf("%s %d%%", light_symbol[perc / 25], perc);
 	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>

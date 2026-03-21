@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -54,12 +55,12 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
-		//   static char *symbol[] = {
-		//     "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
-		//   };
-		// return bprintf("%s %d%", symbol[cap_perc / 5], cap_perc);
+		  static char *cap_symbol[] = {
+		    "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
+		  };
+		return bprintf("%s %d%%", cap_symbol[cap_perc / 20], cap_perc);
 
-		return bprintf("%d%%", cap_perc);
+		// return bprintf("%d", cap_perc);
 	}
 
 const char *battery_notify(const char *bat)
@@ -108,10 +109,10 @@ const char *battery_notify(const char *bat)
 			char *state;
 			char *symbol;
 		} map[] = {
-			{ "Charging",    "󱟦" },
-			{ "Discharging", "󱟤" },
-			{ "Full",        "󱟢" },
-			{ "Not charging", "󱟨" },
+			{ "Charging",    "" },
+			{ "Discharging", "" },
+			{ "Full",        "" },
+			{ "Not charging", "" },
 		};
 		size_t i;
 		char path[PATH_MAX], state[12];

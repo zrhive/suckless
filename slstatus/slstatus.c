@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+/* clang-format off */
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -95,7 +96,8 @@ main(int argc, char *argv[])
 	struct sigaction act;
 	struct timespec start, current, diff, intspec, wait;
   unsigned int iter = 0;
-  int i, ret;
+  int i;
+  int ret;
 
   ARGBEGIN {
 	case 'v':
@@ -143,8 +145,8 @@ main(int argc, char *argv[])
 			while(wait.tv_sec >= 0 &&
 			      (ret = nanosleep(&wait, &wait)) < 0 &&
 			      errno == EINTR && !done) {
-				printstatus(0);
-				errno = upsigno = 0;
+				      printstatus(0);
+				      errno = upsigno = 0;
 			}
 			if (ret < 0 && errno != EINTR)
 				die("nanosleep:");
