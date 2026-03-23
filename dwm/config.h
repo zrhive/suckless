@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 /* clang-format off */
 
-
 /*****************************************/
 /*              APPEARANCE               */
 /*****************************************/
@@ -21,14 +20,14 @@ static const int showbar                  = 1;  /* 0 means no bar */
 static const int topbar                   = 1;  /* 0 means bottom bar */
 static const char *fonts[]                = { "JetBrainsMono Nerd Font:size=12" };
 static const char col_text[]              = "#cad3f5";
-static const char col_blue[]              = "#8aadf4";
+static const char col_maroon[]            = "#ee99a0";
 static const char col_base[]              = "#24273a";
 static const char col_overlay[]           = "#6e738d";
 static const char col_lavender[]          = "#b7bdf8";
 static const char *colors[][3]            = {
   /*               foreground   background    border   */
   [SchemeNorm] = { col_text,    col_base,     col_overlay },
-  [SchemeSel]  = { col_blue,    col_base,     col_lavender  },
+  [SchemeSel]  = { col_maroon,  col_base,     col_lavender  },
 };
 
 /*****************************************/
@@ -52,7 +51,7 @@ static const Rule rules[] = {
 static const float mfact          = 0.75; /* factor of master area size [0.05..0.95] */
 static const int nmaster          = 1;    /* number of clients in master area */
 static const int resizehints      = 0;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen   = 1;    /* 1 will force focus on the fullscreen window */
+static const int lockfullscreen   = 0;    /* 1 will force focus on the fullscreen window */
 static const int refreshrate      = 60;   /* refresh rate (per second) for client move/resize */
 static const int attachdirection  = 2;    /* 0 default, 1 above, 2 aside, 3 below, 4 bottom, 5 top */
 #define FORCE_VSPLIT 1      /* nrowgrid layout: force two clients to always split vertically */
@@ -219,7 +218,7 @@ static const Key keys[] = {
 static const StatusCmd statuscmds[] = {
   /* function     identifier */
 	{ "notify-send 'HELLO'",    5 },
-	{ "hello",    2 },
+	{ SHCMD("notify-send 'hello'"),    2 },
 	{ "hello",     1 },
 	// { datetime,     4 },
 	// { network,      4 },
@@ -230,7 +229,6 @@ static const StatusCmd statuscmds[] = {
 	// { net_rx,       4 },
 };
 static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
-// static const char *open[]  = { "kitty", "-e", "", NULL };
 
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
