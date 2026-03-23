@@ -36,7 +36,7 @@ alsa_master_vol(const char *unused)
 		b--;
 	}
 
-	if (MASTER_IS_MUTED) return bprintf("");
+	if (MASTER_IS_MUTED) return bprintf("MUTED");
 	else
 	{
 		char vol_buf[VOL_BUF_SIZE];

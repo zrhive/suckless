@@ -4,7 +4,7 @@
 /*********************************************/
 /* interval between updates (in ms)          */
 /*********************************************/
-const unsigned int interval = 1000;
+const unsigned int interval = 500;
 
 /*********************************************/
 /* text to show if no value can be retrieved */
@@ -87,16 +87,16 @@ const size_t notifiable_levels_count = sizeof(notifiable_levels) / sizeof(notifi
  *************************************************************************************/
 static const struct arg args[] = {
   /* function			    format			        argument            turn  signal */
-  { netspeed_rx,	    " \x07󱚶 %s\x07 ",		"wlp58s0",          5,    -1 },
-  { cpu_perc,			    " \x06 %s%%\x06 ",	NULL,               5,    -1 },
-  { ram_perc,			    " \x05 %s%%\x05 ",	NULL,               5,    -1 },
-  { run_command,	    "\x04  %s%% \x04",	"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '/Volume:/ {print int($2*100)}'", 30,    4 },
-  // { alsa_master_vol,	" \x04%s\x04 ",		  NULL,               30,    4 },
-  { backlight_perc,		" \x03%s\x03 ",		  "intel_backlight",  30,    3 },
-  { battery_state,		" \x02%s",	        "BAT0",             10,    2 },
-  { battery_perc,		  "%s\x02 ",	        "BAT0",             10,    2 },
+  { netspeed_rx,	    " \07󱚶 %s\07 ",		"wlp58s0",          5,    -1 },
+  { cpu_perc,			    " \06 %s%%\x06 ",	NULL,               5,    -1 },
+  { ram_perc,			    " \05 %s%%\x05 ",	NULL,               5,    -1 },
+  // { run_command,	    "\04  %s%% \x04",	"wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '/Volume:/ {print int($2*100)}'", 1,    4 },
+  { alsa_master_vol,	" \x04%s\x04 ",		  NULL,               30,    4 },
+  { backlight_perc,		" \03%s\03 ",		  "intel_backlight",  1,    3 },
+  { battery_state,		" \02%s",	        "BAT0",             10,    -1 },
+  { battery_perc,		  "%s\02 ",	        "BAT0",             10,    -1 },
   { battery_notify,		"",				          "BAT0",             10,   -1 },
-  { datetime,			    " \x01󰃭 %s\x01 ",		"%b %d %H:%M (%a)", 10,   -1 },
+  { datetime,			    " \01󰃭 %s\01 ",		"%b %d %H:%M (%a)", 10,   -1 },
 };
 
 /*********************************************/

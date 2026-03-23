@@ -218,7 +218,7 @@ static const Key keys[] = {
 /* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
 static const StatusCmd statuscmds[] = {
   /* function     identifier */
-	{ "hello",    5 },
+	{ "notify-send 'HELLO'",    5 },
 	{ "hello",    2 },
 	{ "hello",     1 },
 	// { datetime,     4 },
