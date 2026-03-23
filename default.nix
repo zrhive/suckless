@@ -18,7 +18,7 @@ let
   });
 
   dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-  slstatus = pkgs.st.overrideAttrs { src = ./slstatus1; };
+  slstatus = pkgs.st.overrideAttrs { src = ./slstatus; };
 
   cfg = config.suckless;
 in
