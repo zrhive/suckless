@@ -218,7 +218,7 @@ static const Key keys[] = {
 static const StatusCmd statuscmds[] = {
   /* function     identifier */
 	{ "notify-send 'HELLO'",    5 },
-	{ SHCMD("notify-send 'hello'"),    2 },
+	// { SHCMD("notify-send 'hello'"),    2 },
 	{ "hello",     1 },
 	// { datetime,     4 },
 	// { network,      4 },
