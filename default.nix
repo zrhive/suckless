@@ -47,10 +47,7 @@ in
     })
 
     (mkIf cfg.slstatus {
-      environment.systemPackages = [
-        slstatus
-        pkgs.alsa-utils
-      ];
+      environment.systemPackages = [ slstatus ];
       services.xserver.windowManager.dwm = {
         extraSessionCommands = "${slstatus}/bin/slstatus &";
       };
