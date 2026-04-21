@@ -93,10 +93,10 @@ static const struct arg args[] = {
   { run_command,	    " \04󰕾 %s%%\04 ",	  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '/Volume:/ {print int($2*100)}'",  1,    4 },
   // { alsa_master_vol,	" \04󰕾 %s\04 ",		  NULL,                1,    4 },
   { backlight_perc,		" \03󰃠 %s%%\03 ",		"intel_backlight",   1,    3 },
-  { battery_state,		" \02%s ",	        "BAT0",             10,   -1 },
+  { battery_state,		" \02%s",	          "BAT0",             10,   -1 },
   { battery_perc,		  "%s%%\02 ",	        "BAT0",             10,   -1 },
   { battery_notify,		"",				          "BAT0",             10,   -1 },
-  { datetime,			    " \01󰃭 %s\01 ",		  "%b %d %H:%M (%a)", 10,   -1 },
+  { datetime,			    " \01󰃭 %s\01 ",		  "%a %b %d %H:%M",   10,   -1 },
 };
 
 /*********************************************/
