@@ -203,11 +203,11 @@ static const Key keys[] = {
   { 0,                  XF86XK_MonBrightnessDown,   spawn,  {.v = litdown } },
 
   { 0,                  XF86XK_AudioRaiseVolume,    spawn,
-      SHCMD(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%') },
+      SHCMD("wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%'") },
   { 0,                  XF86XK_AudioLowerVolume,    spawn,
-      SHCMD(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%') },
+      SHCMD("wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%'") },
   { 0,                  XF86XK_AudioMute,           spawn,
-      SHCMD(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}' | xargs -I {} notify-send 'Volume: {}') },
+      SHCMD("wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}' | xargs -I {} notify-send 'Volume: {}'") },
   /******* PROGRAMS AND SERVICES ***************************************/
   { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
   { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
