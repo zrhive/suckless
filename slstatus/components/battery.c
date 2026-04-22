@@ -55,12 +55,12 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
-		  // static char *cap_symbol[] = {
-		  //   "󰂎", "󱊡", "󱊢", "󱊣", "󰁹"
-		  // };
-		// return bprintf("%s %d%%", cap_symbol[cap_perc / 20], cap_perc);
+    static char *cap_symbol[] = {
+      "󰂎", "󱊡", "󱊢", "󱊣", "󰁹"
+    };
+		return bprintf("%s %d%%", cap_symbol[cap_perc / 20], cap_perc);
 
-		return bprintf("%d", cap_perc);
+		// return bprintf("%d", cap_perc);
 	}
 
 const char *battery_notify(const char *bat)
@@ -102,68 +102,69 @@ const char *battery_notify(const char *bat)
 	return NULL;
 }
 
-	const char *
-	battery_state(const char *bat)
-	{
-		static struct {
-			char *state;
-			char *symbol;
-		} map[] = {
-			{ "Charging",    "󱟠" },
-			{ "Discharging", "󱟞" },
-			{ "Full",        "󱟢" },
-			{ "Not charging", "󱟨" },
-		};
-		size_t i;
-		char path[PATH_MAX], state[12];
+const char *
+battery_state(const char *bat)
+{
+  static struct {
+    char *state;
+    char *symbol;
+  } map[] = {
+    { "Charging",    "󱟠 " },
+    { "Discharging", "󱟞 " },
+    { "Full",        "󱟢 " },
+    { "Not charging", "󱟨 " },
+  };
+  size_t i;
+  char path[PATH_MAX], state[12];
 
-		if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
-			return NULL;
-		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
-			return NULL;
+  if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
+    return NULL;
+  if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
+    return NULL;
 
-		for (i = 0; i < LEN(map); i++)
-			if (!strcmp(map[i].state, state))
-				break;
+  for (i = 0; i < LEN(map); i++)
+    if (!strcmp(map[i].state, state))
+      break;
 
-		return (i == LEN(map)) ? "?" : map[i].symbol;
-	}
+  return (i == LEN(map)) ? "?" : map[i].symbol;
+}
 
-	const char *
-	battery_remaining(const char *bat)
-	{
-		uintmax_t charge_now, current_now, m, h;
-		double timeleft;
-		char path[PATH_MAX], state[12];
+const char *
+battery_remaining(const char *bat)
+{
+  uintmax_t charge_now, current_now, m, h;
+  double timeleft;
+  char path[PATH_MAX], state[12];
 
-		if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
-			return NULL;
-		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
-			return NULL;
+  if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
+    return NULL;
+  if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
+    return NULL;
 
-		if (!pick(bat, POWER_SUPPLY_CHARGE, POWER_SUPPLY_ENERGY, path,
-		          sizeof(path)) ||
-		    pscanf(path, "%ju", &charge_now) < 0)
-			return NULL;
+  if (!pick(bat, POWER_SUPPLY_CHARGE, POWER_SUPPLY_ENERGY, path,
+            sizeof(path)) ||
+      pscanf(path, "%ju", &charge_now) < 0)
+    return NULL;
 
-		if (!strcmp(state, "Discharging")) {
-			if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
-			          sizeof(path)) ||
-			    pscanf(path, "%ju", &current_now) < 0)
-				return NULL;
+  if (!strcmp(state, "Discharging")) {
+    if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
+              sizeof(path)) ||
+        pscanf(path, "%ju", &current_now) < 0)
+      return NULL;
 
-			if (current_now == 0)
-				return NULL;
+    if (current_now == 0)
+      return NULL;
 
-			timeleft = (double)charge_now / (double)current_now;
-			h = timeleft;
-			m = (timeleft - (double)h) * 60;
+    timeleft = (double)charge_now / (double)current_now;
+    h = timeleft;
+    m = (timeleft - (double)h) * 60;
 
-			return bprintf("%juh %jum", h, m);
-		}
+    return bprintf("%juh %jum", h, m);
+  }
 
-		return "";
-	}
+  return "";
+}
+
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>
 	#include <machine/apmvar.h>
