@@ -207,7 +207,7 @@ static const Key keys[] = {
   { 0,                  XF86XK_AudioLowerVolume,    spawn,
       SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%'") },
   { 0,                  XF86XK_AudioMute,           spawn,
-      SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ toggle && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}' | xargs -I {} notify-send 'Volume: {}'") },
+      SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}' | xargs -I {} notify-send 'Volume: {}'") },
   /******* PROGRAMS AND SERVICES ***************************************/
   { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
   { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
