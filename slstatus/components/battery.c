@@ -56,9 +56,9 @@
 			return NULL;
 
     static char *cap_symbol[] = {
-      "󰂎", "󱊡", "󱊢", "󱊣", "󰁹"
+      "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
     };
-		return bprintf("%s %d%%", cap_symbol[cap_perc / 20], cap_perc);
+		return bprintf("%s%d%%", cap_symbol[cap_perc / 20], cap_perc);
 
 		// return bprintf("%d", cap_perc);
 	}
