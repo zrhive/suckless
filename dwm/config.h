@@ -229,7 +229,7 @@ static const StatusCmd statuscmds[] = {
 	{ "ds-light",   3 },
 	{ "ds-audio",   4 },
 	{ "notify-send 'HELLO'",    5 },
-	{ "ds-cpu",     6 },
+	{ "echoco",     6 },
 	{ "ds-wifi",    7 },
 };
 static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
