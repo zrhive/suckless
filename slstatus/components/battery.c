@@ -58,7 +58,8 @@
     static char *cap_symbol[] = {
       "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
     };
-		return bprintf("%s%d%%", cap_symbol[cap_perc / 20], cap_perc);
+    int cap_index = (cap_perc / 20 > 4) ? 4 : cap_perc / 20;
+		return bprintf("%s%d%", cap_symbol[cap_index], cap_perc);
 
 		// return bprintf("%d", cap_perc);
 	}
