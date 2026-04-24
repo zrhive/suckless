@@ -20,14 +20,14 @@ static const int showbar                  = 1;  /* 0 means no bar */
 static const int topbar                   = 1;  /* 0 means bottom bar */
 static const char *fonts[]                = { "JetBrainsMono Nerd Font:size=12" };
 static const char col_text[]              = "#cad3f5";
-static const char col_maroon[]            = "#ee99a0";
+static const char col_flamingo[]          = "#f0c6c6";
 static const char col_base[]              = "#24273a";
 static const char col_overlay[]           = "#6e738d";
 static const char col_lavender[]          = "#b7bdf8";
 static const char *colors[][3]            = {
   /*               foreground   background    border   */
   [SchemeNorm] = { col_text,    col_base,     col_overlay },
-  [SchemeSel]  = { col_maroon,  col_base,     col_lavender  },
+  [SchemeSel]  = { col_flamingo,  col_base,     col_lavender  },
 };
 
 /*****************************************/
