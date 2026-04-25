@@ -30,11 +30,11 @@
 			return NULL;
 		}
 
-    // static char *light_symbol[] = { "󰃞", "󰃟", "󰃠", "󰃚", };
+    static const char *light_symbol[] = { "󰃞", "󰃟", "󰃠", "󰃚", };
     perc = cur * 100 / max;
 
-		// return bprintf("%s %d%%", light_symbol[perc / 25], perc);
-		return bprintf("%d", perc);
+		return bprintf("%s %d%%", light_symbol[perc / 25], perc);
+		// return bprintf("%d", perc);
 	}
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>
