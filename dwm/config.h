@@ -100,9 +100,12 @@ static const char *termcmd[]  = { "st", NULL };
 // static const char *volup[]    = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@",   "5%+", "-l", "1.0", NULL };
 // static const char *voldown[]  = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@",   "5%-", NULL };
 // static const char *volmute[]  = { "wpctl", "set-mute",   "@DEFAULT_AUDIO_SINK@",   "toggle", NULL };
-static const char *micmute[]  = { "wpctl", "set-mute",   "@DEFAULT_AUDIO_SOURCE@", "toggle", NULL };
-static const char *litup[]    = { "light", "-A", "5", NULL };
-static const char *litdown[]  = { "light", "-U", "5", NULL };
+// static const char *micmute[]  = { "wpctl", "set-mute",   "@DEFAULT_AUDIO_SOURCE@", "toggle", NULL };
+static const char *micmute[]  = { "fn-mic-mute", NULL };
+// static const char *litup[]    = { "light", "-A", "5", NULL };
+// static const char *litdown[]  = { "light", "-U", "5", NULL };
+static const char *litup[]    = { "fn-light-up", NULL };
+static const char *litdown[]  = { "fn-light-down", NULL };
 /***** PROGRAMS ***************/
 static const char *kittycmd[]   = { "kitty", NULL };
 static const char *roficombi[]  = { "rofi", "-show", "combi", NULL };
