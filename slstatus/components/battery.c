@@ -55,10 +55,19 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
-    static const char *cap_symbol[] = {
-	    "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹",
+    // static const char *cap_symbol[] = {
+    //  "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹",
+    // };
+    const char *batt_state;
+    static const char *cap_symbol[][11] = {
+      { "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹" },
+      { "󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅" },
     };
-		return bprintf("%s%d", cap_symbol[cap_perc / 10], cap_perc);
+
+    if (!(batt_state = battery_state(bat)))
+      return NULL;
+
+		return bprintf("%s %d", cap_symbol[batt_state[0] == '+'][cap_perc / 10], cap_perc);
 
 		// return bprintf("%d", cap_perc);
 	}
@@ -109,10 +118,10 @@ battery_state(const char *bat)
     char *state;
     char *symbol;
   } map[] = {
-    { "Charging",    "󱐋" },
-    { "Discharging", "" },
-    { "Full",        "" },
-    { "Not charging", "" },
+    { "Charging",    "+" },
+    { "Discharging", "-" },
+    { "Full",        "o" },
+    { "Not charging", "o" },
   };
   size_t i;
   char path[PATH_MAX], state[12];
