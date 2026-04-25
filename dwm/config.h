@@ -97,13 +97,10 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
 /***** AUDIO AND BACKLIGHT ****/
-// static const char *volup[]    = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@",   "5%+", "-l", "1.0", NULL };
-// static const char *voldown[]  = { "wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@",   "5%-", NULL };
-// static const char *volmute[]  = { "wpctl", "set-mute",   "@DEFAULT_AUDIO_SINK@",   "toggle", NULL };
-// static const char *micmute[]  = { "wpctl", "set-mute",   "@DEFAULT_AUDIO_SOURCE@", "toggle", NULL };
+static const char *volup[]    = { "fn-audio-up", NULL };
+static const char *voldown[]  = { "fn-audio-down", NULL };
+static const char *volmute[]  = { "fn-audio-mute", NULL };
 static const char *micmute[]  = { "fn-mic-mute", NULL };
-// static const char *litup[]    = { "light", "-A", "5", NULL };
-// static const char *litdown[]  = { "light", "-U", "5", NULL };
 static const char *litup[]    = { "fn-light-up", NULL };
 static const char *litdown[]  = { "fn-light-down", NULL };
 /***** PROGRAMS ***************/
@@ -198,19 +195,12 @@ static const Key keys[] = {
   TAGKEYS(                          XK_9,                               8)
   { MODKEY|ShiftMask,               XK_Escape,    quit,                 {0} },
   /******* AUDIO AND BACKLIGHT CONTROL *********************************/
-  // { 0,                  XF86XK_AudioRaiseVolume,    spawn,  {.v = volup } },
-  // { 0,                  XF86XK_AudioLowerVolume,    spawn,  {.v = voldown } },
-  // { 0,                  XF86XK_AudioMute,           spawn,  {.v = volmute } },
+  { 0,                  XF86XK_AudioRaiseVolume,    spawn,  {.v = volup } },
+  { 0,                  XF86XK_AudioLowerVolume,    spawn,  {.v = voldown } },
+  { 0,                  XF86XK_AudioMute,           spawn,  {.v = volmute } },
   { 0,                  XF86XK_AudioMicMute,        spawn,  {.v = micmute } },
   { 0,                  XF86XK_MonBrightnessUp,     spawn,  {.v = litup } },
   { 0,                  XF86XK_MonBrightnessDown,   spawn,  {.v = litdown } },
-
-  { 0,                  XF86XK_AudioRaiseVolume,    spawn,
-      SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0 && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%'") },
-  { 0,                  XF86XK_AudioLowerVolume,    spawn,
-      SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2*100}' | xargs -I {} notify-send 'Volume: {}%'") },
-  { 0,                  XF86XK_AudioMute,           spawn,
-      SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $3}' | xargs -I {} notify-send 'Volume: {}'") },
   /******* PROGRAMS AND SERVICES ***************************************/
   { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
   { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
@@ -231,8 +221,8 @@ static const StatusCmd statuscmds[] = {
 	{ "ds-batt",    2 },
 	{ "ds-light",   3 },
 	{ "ds-audio",   4 },
-	{ "notify-send 'HELLO'",    5 },
-	{ "echoco",     6 },
+	{ "ds-ram",     5 },
+	{ "ds-cpu",     6 },
 	{ "ds-wifi",    7 },
 };
 static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
