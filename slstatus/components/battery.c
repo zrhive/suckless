@@ -55,12 +55,18 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
-    static char *cap_symbol[] = {
-      "󰂎", "󱊡", "󱊢", "󱊣", "󰁹",
+    unsigned long ul_perc;
+    const char *perc, *state;
+    static const char *batt_icons[][11] = {
+      { "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹" },
+      { "󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅" },
     };
-    int cap_index = (cap_perc / 20 > 4) ? 4 : cap_perc / 20;
-		return bprintf("%s%d%", cap_symbol[cap_index], cap_perc);
 
+    if (!(perc = battery_perc(bat)) || !(state = battery_state(bat)))
+      return NULL;
+    ul_perc = strtoul(perc, NULL, 10);
+
+    return bprintf("%s %d", batt_icons[state[0] == '+'][ul_perc / 10], ul_perc);
 		// return bprintf("%d", cap_perc);
 	}
 
