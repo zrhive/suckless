@@ -8,7 +8,7 @@
 #define TMP_BUF_SIZE 14
 #define VOL_BUF_SIZE 14
 
-const char *alsa_master_vol(void) {
+const char *wp_vol(void) {
   bool MASTER_IS_MUTED = true;
   char tmp_buf[TMP_BUF_SIZE];
   short b;

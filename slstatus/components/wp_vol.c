@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char *wireplumber(void) {
+const char *wireplumber_vol(void) {
   char tmp_buf[64];
   FILE *fp = popen("wpctl get-volume @DEFAULT_AUDIO_SINK@", "r");
   fgets(tmp_buf, sizeof(tmp_buf), fp);
