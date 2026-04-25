@@ -55,10 +55,10 @@
 		if (pscanf(path, "%d", &cap_perc) != 1)
 			return NULL;
 
-    static char *cap_symbol[] = {
+    static const char *cap_symbol[] = {
 	    "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹",
     };
-		return bprintf("%s%d%", cap_symbol[cap_perc / 10], cap_perc);
+		return bprintf("%s%d", cap_symbol[cap_perc / 10], cap_perc);
 
 		// return bprintf("%d", cap_perc);
 	}
