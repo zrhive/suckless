@@ -107,6 +107,7 @@ static const char *litdown[]  = { "fn-light-down", NULL };
 static const char *kittycmd[]   = { "kitty", NULL };
 static const char *roficombi[]  = { "rofi", "-show", "combi", NULL };
 static const char *rofidrun[]   = { "rofi", "-show", "drun", NULL };
+static const char *rofipower[]  = { "rofi", "-show", "power-menu", "-modi", "power-menu:rofi-power-menu", NULL };
 static const char *yazifile[]   = { "kitty", "-e", "yazi", NULL };
 static const char *nvimstart[]  = { "kitty", "nvim", NULL };
 static const char *flamegui[]   = { "flameshot", "gui", NULL };
@@ -205,10 +206,11 @@ static const Key keys[] = {
   { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
   { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
   { MODKEY,             XK_e,         spawn,  {.v = rofidrun  } },
+  { MODKEY,             XK_grave,     spawn,  {.v = rofipower } },
   { MODKEY,             XK_y,         spawn,  {.v = yazifile  } },
   { MODKEY,             XK_v,         spawn,  {.v = nvimstart } },
   { MODKEY,             XK_Print,     spawn,  {.v = flamescreen } },
-  { MODKEY|METAKEY,     XK_Print,     spawn,  {.v = flamegui } },
+  { MODKEY|METAKEY,     XK_Print,     spawn,  {.v = flamegui  } },
 };
 
 /*****************************************/
