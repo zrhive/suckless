@@ -7,12 +7,8 @@
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
   cfg = config.suckless;
-
-  flake = import ./flake.nix;
 in
 {
-  overlays = flake.overlays;
-
   options.suckless = {
     dwm = mkEnableOption "dwm";
     slstatus = mkEnableOption "slstatus";
