@@ -963,8 +963,8 @@ drawbar(Monitor *m)
 			if ((unsigned char)(*s) < ' ') {
 				ch = *s;
 				*s = '\0';
-				tw = TEXTW(text) - lrpad / 2 + 2;
-				drw_text(drw, m->ww - statusw - stw + x, 0, tw, bh, lrpad / 2 - 2, text, 0);
+				tw = TEXTW(text) - lrpad;
+				drw_text(drw, m->ww - statusw + x, 0, tw, bh, 0, text, 0);
 				x += tw;
 				*s = ch;
 				text = s + 1;
