@@ -12,6 +12,6 @@ indent_size = 2
 insert_final_newline = unset
 trim_trailing_whitespace = unset
 
-[Makefile]
+[*.mk,Makefile]
 indent_style = tab
 indent_size = 4
