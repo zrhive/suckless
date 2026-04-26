@@ -1,0 +1,6 @@
+# build outputs
+result
+result-*
+
+# direnv output
+.direnv
