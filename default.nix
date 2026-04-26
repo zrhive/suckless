@@ -7,8 +7,12 @@
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
   cfg = config.suckless;
+
+  flake = import ./flake.nix;
 in
 {
+  overlays = flake.overlays;
+
   options.suckless = {
     dwm = mkEnableOption "dwm";
     slstatus = mkEnableOption "slstatus";
@@ -23,15 +27,12 @@ in
         package = pkgs.dwm;
       };
     })
-
     (mkIf cfg.dmenu {
       environment.systemPackages = [ pkgs.dmenu ];
     })
-
     (mkIf cfg.st {
       environment.systemPackages = [ pkgs.st ];
     })
-
     (mkIf cfg.slstatus {
       environment.systemPackages = [ pkgs.slstatus ];
       services.xserver.windowManager.dwm = {
