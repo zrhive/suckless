@@ -15,22 +15,27 @@
         suckless = import ./suckless.nix;
       };
 
-      packages = eachSystem (pkgs: {
-        dwm = pkgs.dwm.overrideAttrs (old: {
+      overlays.default = _: prev: {
+        dwm = prev.dwm.overrideAttrs (old: {
           src = ./dwm;
-          buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
+          buildInputs = old.buildInputs ++ [ prev.libxcursor ];
         });
-
-        st = pkgs.st.overrideAttrs (old: {
+        st = prev.st.overrideAttrs (old: {
           src = ./st;
-          buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
+          buildInputs = old.buildInputs ++ [ prev.libxcursor ];
         });
+        dmenu = prev.dmenu.overrideAttrs { src = ./dmenu; };
+        slstatus = prev.st.overrideAttrs { src = ./slstatus; };
+      };
 
-        dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-        slstatus = pkgs.st.overrideAttrs { src = ./slstatus; };
+      packages = eachSystem (pkgs: {
+        inherit (pkgs)
+          dwm
+          slstatus
+          dmenu
+          st
+          ;
       });
-
-      # overlays.default = ;
 
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
