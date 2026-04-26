@@ -6,15 +6,15 @@
   };
 
   outputs =
-    { self, nixpkgs }:
+    { nixpkgs }:
     let
       systems = [ "x86_64-linux" ];
       eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     in
     {
       nixosModules = {
-        suckless = import ./.;
-        default = self.nixosModules.suckless;
+        default = import ./.;
+        suckless = import ./suckless.nix;
       };
 
       devShells = eachSystem (pkgs: {
