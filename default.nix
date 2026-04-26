@@ -6,20 +6,6 @@
 }:
 let
   inherit (lib) mkEnableOption mkIf mkMerge;
-
-  dwm = pkgs.dwm.overrideAttrs (old: {
-    src = ./dwm;
-    buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
-  });
-
-  st = pkgs.st.overrideAttrs (old: {
-    src = ./st;
-    buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
-  });
-
-  dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-  slstatus = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
-
   cfg = config.suckless;
 in
 {
@@ -34,22 +20,22 @@ in
     (mkIf cfg.dwm {
       services.xserver.windowManager.dwm = {
         enable = true;
-        package = dwm;
+        package = pkgs.dwm;
       };
     })
 
     (mkIf cfg.dmenu {
-      environment.systemPackages = [ dmenu ];
+      environment.systemPackages = [ pkgs.dmenu ];
     })
 
     (mkIf cfg.st {
-      environment.systemPackages = [ st ];
+      environment.systemPackages = [ pkgs.st ];
     })
 
     (mkIf cfg.slstatus {
-      environment.systemPackages = [ slstatus ];
+      environment.systemPackages = [ pkgs.slstatus ];
       services.xserver.windowManager.dwm = {
-        extraSessionCommands = "${slstatus}/bin/slstatus &";
+        extraSessionCommands = "${pkgs.slstatus}/bin/slstatus &";
       };
     })
   ];

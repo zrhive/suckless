@@ -12,7 +12,21 @@
     {
       nixosModules = {
         default = import ./.;
-        suckless = import ./suckless.nix;
+        suckless =
+          { lib, ... }:
+          {
+            imports = [ ./. ];
+            suckless =
+              let
+                inherit (lib) mkDefault;
+              in
+              {
+                dwm = mkDefault true;
+                slstatus = mkDefault true;
+                dmenu = mkDefault true;
+                st = mkDefault true;
+              };
+          };
       };
 
       overlays.default = _: prev: {
@@ -25,7 +39,7 @@
           buildInputs = old.buildInputs ++ [ prev.libxcursor ];
         });
         dmenu = prev.dmenu.overrideAttrs { src = ./dmenu; };
-        slstatus = prev.st.overrideAttrs { src = ./slstatus; };
+        slstatus = prev.slstatus.overrideAttrs { src = ./slstatus; };
       };
 
       packages = eachSystem (pkgs: {
