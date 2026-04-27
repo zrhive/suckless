@@ -7,6 +7,7 @@
     { self, nixpkgs }:
     let
       suckless = import ./.;
+
       lib = nixpkgs.lib;
       systems = [ "x86_64-linux" ];
       eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
@@ -16,7 +17,7 @@
         default = suckless.module;
 
         suckless = (
-          self.nixosModules.default
+          suckless.module
           // {
             nixpkgs.overlays = [ self.overlays.default ];
             suckless =
