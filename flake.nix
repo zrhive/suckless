@@ -39,15 +39,7 @@
 
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
-          buildInputs = builtins.attrValues {
-            inherit (pkgs)
-              nixfmt
-
-              gcc
-              pkg-config
-              libx11
-              ;
-          };
+          packages = [ pkgs.nixfmt ];
         };
       });
     };
