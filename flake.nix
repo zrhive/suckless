@@ -16,25 +16,23 @@
       nixosModules = {
         default = suckless.module;
 
-        suckless =
-          { ... }:
-          {
-            imports = [ suckless.module ];
-            nixpkgs.overlays = [ self.overlays.default ];
-            suckless =
-              let
-                inherit (lib) mkDefault;
-              in
-              {
-                dwm = mkDefault true;
-                slstatus = mkDefault true;
-                dmenu = mkDefault true;
-                st = mkDefault true;
-              };
-          };
+        suckless = {
+          imports = [ suckless.module ];
+          nixpkgs.overlays = [ self.overlays.default ];
+          suckless =
+            let
+              inherit (lib) mkDefault;
+            in
+            {
+              dwm = mkDefault true;
+              slstatus = mkDefault true;
+              dmenu = mkDefault true;
+              st = mkDefault true;
+            };
+        };
       };
 
-      overlays.default = final: _: suckless.packages { pkgs = final; };
+      overlays.default = _: prev: suckless.packages { pkgs = prev; };
 
       packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
