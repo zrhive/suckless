@@ -16,9 +16,10 @@
       nixosModules = {
         default = suckless.module;
 
-        suckless = (
-          suckless.module
-          // {
+        suckless =
+          { ... }:
+          {
+            imports = [ suckless.module ];
             nixpkgs.overlays = [ self.overlays.default ];
             suckless =
               let
@@ -30,8 +31,7 @@
                 dmenu = mkDefault true;
                 st = mkDefault true;
               };
-          }
-        );
+          };
       };
 
       overlays.default = final: _: suckless.packages { pkgs = final; };
