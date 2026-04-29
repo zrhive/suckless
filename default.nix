@@ -10,8 +10,12 @@
         src = ./st;
         buildInputs = old.buildInputs ++ [ pkgs.libxcursor ];
       });
-      dmenu = pkgs.dmenu.overrideAttrs { src = ./dmenu; };
-      slstatus = pkgs.slstatus.overrideAttrs { src = ./slstatus; };
+      dmenu = pkgs.dmenu.overrideAttrs (_: {
+        src = ./dmenu;
+      });
+      slstatus = pkgs.slstatus.overrideAttrs (_: {
+        src = ./slstatus;
+      });
     };
 
   module =
