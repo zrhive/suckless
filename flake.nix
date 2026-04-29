@@ -34,7 +34,7 @@
         };
       };
 
-      overlays.default = final: _: suckless.packages { pkgs = final; };
+      overlays.default = _: prev: suckless.packages { pkgs = prev; };
       packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
       devShells = eachSystem (pkgs: {
