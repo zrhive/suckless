@@ -9,15 +9,20 @@
       suckless = import ./.;
 
       lib = nixpkgs.lib;
-      systems = [ "x86_64-linux" ];
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      systems = lib.systems.flakeExposed;
+      # pkgs = system: nixpkgs.legacyPackages.${system}.extend self.overlays.default;
+      # eachSystem = f: lib.genAttrs systems (system: f pkgs);
+      eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     in
     {
+      overlays.default = final: _: self.packages.${final.system};
+      packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
+
       nixosModules = {
         default = suckless.module;
 
         suckless = {
-          imports = [ suckless.module ];
+          imports = [ self.nixosModules.default ];
           nixpkgs.overlays = [ self.overlays.default ];
           suckless =
             let
@@ -31,10 +36,6 @@
             };
         };
       };
-
-      overlays.default = _: prev: suckless.packages { pkgs = prev; };
-
-      packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
