@@ -15,7 +15,7 @@
       eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     in
     {
-      overlays.default = final: _: self.packages.${final.system};
+      overlays.default = final: prev: self.packages.${prev.system};
       packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
       nixosModules = {
