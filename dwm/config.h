@@ -12,7 +12,7 @@ static const unsigned int gappoh          = 20; /* horiz outer gap between windo
 static const unsigned int gappov          = 20; /* vert outer gap between windows and screen edge */
 static       int smartgaps                = 0;  /* 1 means no outer gap when there is only one window */
 static const unsigned int systraypinning  = 0;  /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
-static const unsigned int systrayonleft   = 1;  /* 0: systray in the right corner, >0: systray on left of status text */
+static const unsigned int systrayonleft   = 0;  /* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing  = 2;  /* systray spacing */
 static const int systraypinningfailfirst  = 1;  /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray              = 1;  /* 0 means no systray */
@@ -196,21 +196,21 @@ static const Key keys[] = {
   TAGKEYS(                          XK_9,                               8)
   { MODKEY|ShiftMask,               XK_Escape,    quit,                 {0} },
   /******* AUDIO AND BACKLIGHT CONTROL *********************************/
-  { 0,                  XF86XK_AudioRaiseVolume,    spawn,  {.v = volup } },
-  { 0,                  XF86XK_AudioLowerVolume,    spawn,  {.v = voldown } },
-  { 0,                  XF86XK_AudioMute,           spawn,  {.v = volmute } },
-  { 0,                  XF86XK_AudioMicMute,        spawn,  {.v = micmute } },
-  { 0,                  XF86XK_MonBrightnessUp,     spawn,  {.v = litup } },
-  { 0,                  XF86XK_MonBrightnessDown,   spawn,  {.v = litdown } },
+  { 0,                  XF86XK_AudioRaiseVolume,      spawn,    {.v = volup } },
+  { 0,                  XF86XK_AudioLowerVolume,      spawn,    {.v = voldown } },
+  { 0,                  XF86XK_AudioMute,             spawn,    {.v = volmute } },
+  { 0,                  XF86XK_AudioMicMute,          spawn,    {.v = micmute } },
+  { 0,                  XF86XK_MonBrightnessUp,       spawn,    {.v = litup } },
+  { 0,                  XF86XK_MonBrightnessDown,     spawn,    {.v = litdown } },
   /******* PROGRAMS AND SERVICES ***************************************/
-  { MODKEY,             XK_t,         spawn,  {.v = kittycmd  } },
-  { MODKEY,             XK_r,         spawn,  {.v = roficombi } },
-  { MODKEY,             XK_e,         spawn,  {.v = rofidrun  } },
-  { MODKEY,             XK_grave,     spawn,  {.v = rofipower } },
-  { MODKEY,             XK_y,         spawn,  {.v = yazifile  } },
-  { MODKEY,             XK_v,         spawn,  {.v = nvimstart } },
-  { MODKEY,             XK_Print,     spawn,  {.v = flamescreen } },
-  { MODKEY|METAKEY,     XK_Print,     spawn,  {.v = flamegui  } },
+  { MODKEY,             XK_Return,    spawn,    {.v = kittycmd  } },
+  { MODKEY,             XK_r,         spawn,    {.v = roficombi } },
+  { MODKEY,             XK_e,         spawn,    {.v = rofidrun  } },
+  { MODKEY,             XK_grave,     spawn,    {.v = rofipower } },
+  { MODKEY,             XK_y,         spawn,    {.v = yazifile  } },
+  { MODKEY,             XK_v,         spawn,    {.v = nvimstart } },
+  { MODKEY,             XK_Print,     spawn,    {.v = flamescreen } },
+  { MODKEY|METAKEY,     XK_Print,     spawn,    {.v = flamegui  } },
 };
 
 /*****************************************/
@@ -218,14 +218,14 @@ static const Key keys[] = {
 /*****************************************/
 /* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
 static const StatusCmd statuscmds[] = {
-  /* function     identifier */
-	{ "ds-date",    1 },
-	{ "ds-batt",    2 },
-	{ "ds-light",   3 },
-	{ "ds-audio",   4 },
-	{ "ds-ram",     5 },
-	{ "ds-cpu",     6 },
-	{ "ds-wifi",    7 },
+  /* function       identifier */
+	{ "ds-date",      1 },
+	{ "ds-batt",      2 },
+	{ "ds-light",     3 },
+	{ "ds-audio",     4 },
+	{ "ds-ram",       5 },
+	{ "ds-cpu",       6 },
+	{ "ds-wifi",      7 },
 };
 static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
 
