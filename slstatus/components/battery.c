@@ -49,130 +49,125 @@
 	{
 		int cap_perc;
 		char path[PATH_MAX];
-
-		if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0)
-			return NULL;
-		if (pscanf(path, "%d", &cap_perc) != 1)
-			return NULL;
-
-    // static const char *cap_symbol[] = {
-    //  "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹",
-    // };
     const char *batt_state;
     static const char *cap_symbol[][11] = {
       { "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹" },
       { "󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅" },
     };
 
+		if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0)
+			return NULL;
+
+		if (pscanf(path, "%d", &cap_perc) != 1)
+			return NULL;
+
     if (!(batt_state = battery_state(bat)))
       return NULL;
 
 		return bprintf("%s %d", cap_symbol[batt_state[0] == '+'][cap_perc / 10], cap_perc);
-
-		// return bprintf("%d", cap_perc);
 	}
 
-const char *battery_notify(const char *bat)
-{
-	int cap_perc;
-	char state[12];
-	char path[PATH_MAX];
+  const char *battery_notify(const char *bat)
+  {
+    int cap_perc;
+    char state[12];
+    char path[PATH_MAX];
 
-	if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0 || pscanf(path, "%d", &cap_perc) != 1)
-		return NULL;
-
-	if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0 || pscanf(path, "%12[a-zA-Z ]", &state) != 1)
-		return NULL;
-
-	if (strcmp("Charging", state) == 0) {
-		last_notified_level = 0;
-		return NULL;
-	}
-
-	if (strcmp("Discharging", state) != 0)
-		return NULL;
-
-	char cmd[28];
-
-	for (size_t i = 0; i < notifiable_levels_count; i++) {
-		if (notifiable_levels[i] != cap_perc)
-			continue;
-
-		if (notifiable_levels[i] != last_notified_level) {
-			last_notified_level = notifiable_levels[i];
-
-			snprintf(cmd, sizeof(cmd), "%s %s %d%%", notify_cmd, battery_str, cap_perc);
-			system(cmd);
-
-			break;
-		}
-	}
-
-	return NULL;
-}
-
-const char *
-battery_state(const char *bat)
-{
-  static struct {
-    char *state;
-    char *symbol;
-  } map[] = {
-    { "Charging",    "+" },
-    { "Discharging", "-" },
-    { "Full",        "o" },
-    { "Not charging", "o" },
-  };
-  size_t i;
-  char path[PATH_MAX], state[12];
-
-  if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
-    return NULL;
-  if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
-    return NULL;
-
-  for (i = 0; i < LEN(map); i++)
-    if (!strcmp(map[i].state, state))
-      break;
-
-  return (i == LEN(map)) ? "?" : map[i].symbol;
-}
-
-const char *
-battery_remaining(const char *bat)
-{
-  uintmax_t charge_now, current_now, m, h;
-  double timeleft;
-  char path[PATH_MAX], state[12];
-
-  if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
-    return NULL;
-  if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
-    return NULL;
-
-  if (!pick(bat, POWER_SUPPLY_CHARGE, POWER_SUPPLY_ENERGY, path,
-            sizeof(path)) ||
-      pscanf(path, "%ju", &charge_now) < 0)
-    return NULL;
-
-  if (!strcmp(state, "Discharging")) {
-    if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
-              sizeof(path)) ||
-        pscanf(path, "%ju", &current_now) < 0)
+    if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0 || pscanf(path, "%d", &cap_perc) != 1)
       return NULL;
 
-    if (current_now == 0)
+    if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0 || pscanf(path, "%12[a-zA-Z ]", &state) != 1)
       return NULL;
 
-    timeleft = (double)charge_now / (double)current_now;
-    h = timeleft;
-    m = (timeleft - (double)h) * 60;
+    if (strcmp("Charging", state) == 0) {
+      last_notified_level = 0;
+      return NULL;
+    }
 
-    return bprintf("%juh %jum", h, m);
+    if (strcmp("Discharging", state) != 0)
+      return NULL;
+
+    char cmd[28];
+
+    for (size_t i = 0; i < notifiable_levels_count; i++) {
+      if (notifiable_levels[i] != cap_perc)
+        continue;
+
+      if (notifiable_levels[i] != last_notified_level) {
+        last_notified_level = notifiable_levels[i];
+
+        snprintf(cmd, sizeof(cmd), "%s %s %d%%", notify_cmd, battery_str, cap_perc);
+        system(cmd);
+
+        break;
+      }
+    }
+
+    return NULL;
   }
 
-  return "";
-}
+  const char *
+  battery_state(const char *bat)
+  {
+    static struct {
+      char *state;
+      char *symbol;
+    } map[] = {
+      { "Charging",    "+" },
+      { "Discharging", "-" },
+      { "Full",        "o" },
+      { "Not charging", "o" },
+    };
+    size_t i;
+    char path[PATH_MAX], state[12];
+
+    if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
+      return NULL;
+    if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
+      return NULL;
+
+    for (i = 0; i < LEN(map); i++)
+      if (!strcmp(map[i].state, state))
+        break;
+
+    return (i == LEN(map)) ? "?" : map[i].symbol;
+  }
+
+  const char *
+  battery_remaining(const char *bat)
+  {
+    uintmax_t charge_now, current_now, m, h;
+    double timeleft;
+    char path[PATH_MAX], state[12];
+
+    if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
+      return NULL;
+    if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
+      return NULL;
+
+    if (!pick(bat, POWER_SUPPLY_CHARGE, POWER_SUPPLY_ENERGY, path,
+              sizeof(path)) ||
+        pscanf(path, "%ju", &charge_now) < 0)
+      return NULL;
+
+    if (!strcmp(state, "Discharging")) {
+      if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
+                sizeof(path)) ||
+          pscanf(path, "%ju", &current_now) < 0)
+        return NULL;
+
+      if (current_now == 0)
+        return NULL;
+
+      timeleft = (double)charge_now / (double)current_now;
+      h = timeleft;
+      m = (timeleft - (double)h) * 60;
+
+      return bprintf("%juh %jum", h, m);
+    }
+
+    return "";
+  }
 
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>

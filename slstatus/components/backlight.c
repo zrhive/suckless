@@ -15,6 +15,7 @@
 	{
 		char path[PATH_MAX];
 		int max, cur, perc;
+    static const char *light_symbol[] = { "", "󰃞", "󰃟", "󰃠", "󰃚", };
 
 		if (esnprintf(path, sizeof (path), BRIGHTNESS_MAX, card) < 0 ||
 			pscanf(path, "%d", &max) != 1) {
@@ -30,12 +31,11 @@
 			return NULL;
 		}
 
-    static const char *light_symbol[] = { "󰃞", "󰃟", "󰃠", "󰃚", };
     perc = cur * 100 / max;
 
-		return bprintf("%s %d%%", light_symbol[perc / 25], perc);
-		// return bprintf("%d", perc);
+		return bprintf("%s %d%%", light_symbol[perc / 21], perc);
 	}
+
 #elif defined(__OpenBSD__)
 	#include <fcntl.h>
 	#include <sys/ioctl.h>
