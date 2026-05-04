@@ -10,7 +10,7 @@
 
       lib = nixpkgs.lib;
       systems = lib.systems.flakeExposed;
-      eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      eachSystem = f: lib.genAttrs systems (s: f nixpkgs.legacyPackages.${s});
     in
     {
       nixosModules = {
@@ -28,7 +28,9 @@
         };
       };
 
-      overlays.default = _: prev: suckless.packages { pkgs = prev; };
+      # overlays.default = _: prev: suckless.packages { pkgs = prev; };
+      overlays.default = final: _: self.packages.${final.system};
+
       packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
       devShells = eachSystem (pkgs: {
