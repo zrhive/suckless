@@ -29,7 +29,7 @@
       };
 
       # overlays.default = _: prev: suckless.packages { pkgs = prev; };
-      overlays.default = final: _: self.packages.${final.system};
+      overlays.default = final: prev: self.packages.${prev.system};
 
       packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
 
