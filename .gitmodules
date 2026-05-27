@@ -1,3 +1,6 @@
 [submodule "dwm-flexipatch"]
 	path = dwm-flexipatch
-	url = https://github.com/zrhive/dwm-flexipatch.git
+	url = git@github.com:zrhive/dwm-flexipatch.git
+[submodule "st-flexipatch"]
+	path = st-flexipatch
+	url = git@github.com:zrhive/st-flexipatch.git
