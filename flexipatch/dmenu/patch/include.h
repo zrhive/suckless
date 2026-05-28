@@ -1,0 +1,6 @@
+#include "fzfexpect.h"
+#include "mousesupport.h"
+#include "navhistory.h"
+#include "vi_mode.h"
+#include "highpriority.h"
+#include "numbers.h"
