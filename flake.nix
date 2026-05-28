@@ -10,7 +10,7 @@
     suckless = import ./.;
     util = import ./nix/lib.nix;
 
-    inherit (inputs.nixpkgs) lib;
+    inherit (nixpkgs) lib;
     systems = lib.systems.flakeExposed;
     eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
   in
