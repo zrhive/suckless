@@ -13,12 +13,14 @@
   in
   {
     nixosModules = {
-      default = ./nix/nixos.nix { inherit self; };
+      default = ./nix/nixos.nix;
+      suckless = self.nixosModules.default;
       flexipatch = self.nixosModules.default // ./nix/common.nix { inherit self; };
     };
 
     homeModules = {
-      default = ./nix/home.nix { inherit self; };
+      default = ./nix/home.nix;
+      suckless = self.homeModules.default;
       flexipatch = self.homeModules.default // ./nix/common.nix { inherit self; };
     };
 
