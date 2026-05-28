@@ -7,9 +7,6 @@
   };
 
   outputs = { self, nixpkgs }: let
-    suckless = import ./.;
-    util = import ./nix/lib.nix;
-
     inherit (nixpkgs) lib;
     systems = lib.systems.flakeExposed;
     eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
@@ -17,31 +14,15 @@
   {
     nixosModules = {
       default = ./nix/nixos.nix { inherit self; };
-      flexipatch = {
-        imports = [ self.nixosModules.default ];
-        suckless.tools = {
-          dwm.enable = true;
-          slstatus.enable = true;
-          dmenu.enable = true;
-          st.enable = true;
-        };
-      };
+      flexipatch = self.nixosModules.default // ./nix/common.nix { inherit self; };
     };
 
     homeModules = {
       default = ./nix/home.nix { inherit self; };
-      flexipatch = {
-        imports = [ self.homeModules.default ];
-        suckless.tools = {
-          dwm.enable = true;
-          slstatus.enable = true;
-          dmenu.enable = true;
-          st.enable = true;
-        };
-      };
+      flexipatch = self.homeModules.default // ./nix/common.nix { inherit self; };
     };
 
-    packages = eachSystem (pkgs: import ./nix/package.nix { inherit self pkgs; }
+    packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; }
       // {
         test = {
           dmenu = (pkgs.dmenu.overrideAttrs { src = "${self}/flexipatch/dmenu"; }).override {};
@@ -49,9 +30,10 @@
       }
     );
 
-    overlays.default = final: prev: let
-      packages = import ./nix/package.nix { pkgs = final; };
-    in { inherit (packages) suckless flexipatch; };
+    overlays.default = final: _prev: {
+      # inherit (import ./nix/packages.nix { pkgs = final; }) suckless flexipatch;
+      inherit (self.packages.${final.stdenv.hostPlatform.system}) suckless flexipatch;
+    };
 
     devShell = eachSystem (pkgs: pkgs.mkShell {
       packages = [ pkgs.nixfmt pkgs.statix pkgs.deadnix ];

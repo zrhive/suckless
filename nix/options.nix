@@ -1,84 +1,75 @@
-{ self, config, lib, ... }:
+{ config, lib, ... }:
 {
-  options.suckless =
-    let
-      inherit (lib) mkDefault mkEnableOption mkOption types literalExpression;
-      inherit (config.suckless) tools;
-      packages = self.packages.{pkgs.stdenv.hostPlatform};
-    in
-    {
-      enable = mkEnableOption "Enable suckless modules.";
+  options.suckless = let inherit (lib) mkEnableOption mkOption types literalExpression; in {
+    enable = mkEnableOption "Enable suckless modules.";
 
-      tools = mkOption {
-        type = types.attrsOf (types.submodules ({ name, ... }:
-          {
-            options = {
-              enable = mkEnableOption "Enable ${name}.";
-              package = mkOption {
-                type = types.package;
-                description = "Package to install.";
-              };
-              command = mkOption {
-                type = types.nullOr (types.either types.lines types.str);
-                default = null;
-                description = "Commands to execute for the tool.";
-              };
+    tools = mkOption {
+      type = types.attrsOf (types.submodules ({ name, ... }:
+        {
+          options = {
+            enable = mkEnableOption "Enable ${name}.";
+
+            package = mkOption {
+              type = types.nullOr types.package;
+              default = null;
+              description = "Package to install.";
             };
-          }
-        ));
-        example = literalExpression ''
-          suckless = {
-            dwm.enable = true;
-            dmenu = {
-              enable = true;
-              package = pkgs.dmenu;
+
+            command = mkOption {
+              type = types.lines;
+              default = "";
+              description = "Commands to execute for the tool.";
             };
           };
-        '';
-        default = {
-          dmenu.package = mkDefault packages.dmenu;
-          dwm.package = mkDefault packages.dwm;
-          st.package = mkDefault packages.st;
-          slstatus.package = mkDefault packages.slstatus;
+        }
+      ));
+      example = literalExpression ''
+        tools = {
+          dwm.enable = true;
+          dmenu = {
+            enable = true;
+            package = pkgs.dmenu;
+          };
         };
-        description = "Suckless tools config.";
-      };
-
-      #: PLACEHOLDERS
-      packages = mkOption {
-        type = types.nullOr (types.listOf types.package);
-        default = [];
-        readOnly = true;
-        description = "A placeholder to compile the packages.";
-      };
-
-      extraCommands = mkOption {
-        type = types.nullOr types.lines;
-        default = null;
-        readOnly = true;
-        description = "Extra commands during session initialization.";
-      };
+      '';
+      default = {};
+      description = "Suckless tools config.";
     };
 
-  config =
-    let
-      inherit (lib) mkIf any attrValues
-        optional optionalString concatMap concatMapStringsSep;
+    #: PLACEHOLDERS
+    packages = mkOption {
+      type = types.listOf types.package;
+      default = [];
+      readOnly = true;
+      description = "A placeholder to compile the packages.";
+    };
 
-      inherit (config.suckless) tools;
-      toolList = attrValues config.suckless.tools;
-      anyToolEnabled = any (tool: tool.enable) toolList;
+    extraCommands = mkOption {
+      type = types.lines;
+      default = "";
+      readOnly = true;
+      description = "Extra commands during session initialization.";
+    };
+  };
 
-      packages = concatMap (tool: optional tool.enable tool.package) toolList;
-      extraCommands = concatMapStringsSep "\n" (tool: tool.command) toolList;
-    in
-    mkIf (config.suckless.enable || anyToolEnabled) {
-      suckless = {
-        inherit packages extraCommands;
+  config = let
+    inherit (lib) mkIf any attrValues
+      optional optionalString concatMap concatMapStringsSep;
 
-        tools.slstatus.command = optionalString (
-          tools.slstatus.enable && tools.dwm.enable
-        ) "${getExe tools.slstatus.package}";
-      };
-    }
+    inherit (config.suckless) tools;
+    toolList = attrValues config.suckless.tools;
+    anyToolEnabled = any (tool: tool.enable) toolList;
+
+    packages = concatMap (tool: optional tool.enable tool.package) toolList;
+    extraCommands = concatMapStringsSep "\n" (tool: tool.command) toolList;
+
+  in mkIf (config.suckless.enable || anyToolEnabled) {
+    suckless = {
+      inherit packages extraCommands;
+
+      tools.slstatus.command = optionalString (
+        tools.slstatus.enable && tools.dwm.enable
+      ) "${getExe tools.slstatus.package}";
+    };
+  };
 }
