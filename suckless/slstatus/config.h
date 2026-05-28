@@ -91,7 +91,7 @@ static const struct arg args[] = {
   { cpu_perc,			    " \06 %s%%\06 ",   NULL,                5,   -1 },
   { ram_perc,			    " \05 %s%%\05 ",	  NULL,                5,   -1 },
   // { run_command,	    " \04󰕾 %s%%\04 ",	  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'",  1,    4 },
-  { run_command,	    " \04󰕾 %s%%\04 ",	  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{if ($3) print ''; else print int($2*100)}'",  1,    4 },
+  { run_command,	    " \04󰕾 %s%%\04 ",	  "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{if ($3) print 'x'; else print int($2*100)}'",  1,    4 },
   // { backlight_perc,		" \03󰃠 %s%%\03 ",		"intel_backlight",   1,    3 },
   { backlight_perc,		" \03%s\03 ",		    "intel_backlight",   1,   -1 },
   // { battery_state,		" \02%s",	          "BAT0",             10,   -1 },
