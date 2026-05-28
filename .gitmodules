@@ -1,5 +1,5 @@
-[submodule "flexipatch/finalizer"]
-	path = flexipatch/finalizer
+[submodule "flexipatch/flexipatch-finalizer"]
+	path = flexipatch/flexipatch-finalizer
 	url = https://github.com/bakkeby/flexipatch-finalizer.git
 [submodule "flexipatch/dwm-flexipatch"]
 	path = flexipatch/dwm-flexipatch
