@@ -1,41 +1,60 @@
 {
   description = "suckless configuration that sucks less";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs = {
+    self.submodules = true;
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
 
-  outputs =
-    { self, nixpkgs }:
-    let
-      suckless = import ./.;
+  outputs = { self, nixpkgs }: let
+    suckless = import ./.;
+    util = import ./nix/lib.nix;
 
-      lib = nixpkgs.lib;
-      systems = lib.systems.flakeExposed;
-      eachSystem = f: lib.genAttrs systems (s: f nixpkgs.legacyPackages.${s});
-    in
-    {
-      nixosModules = {
-        default = suckless.module;
-
-        suckless = {
-          imports = [ self.nixosModules.default ];
-          nixpkgs.overlays = [ self.overlays.default ];
-          suckless = {
-            dwm = lib.mkDefault true;
-            slstatus = lib.mkDefault true;
-            dmenu = lib.mkDefault true;
-            st = lib.mkDefault true;
-          };
+    inherit (inputs.nixpkgs) lib;
+    systems = lib.systems.flakeExposed;
+    eachSystem = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+  in
+  {
+    nixosModules = {
+      default = ./nix/nixos.nix { inherit self; };
+      flexipatch = {
+        imports = [ self.nixosModules.default ];
+        suckless.tools = {
+          dwm.enable = true;
+          slstatus.enable = true;
+          dmenu.enable = true;
+          st.enable = true;
         };
       };
-
-      overlays.default = _: prev: suckless.packages { pkgs = prev; };
-
-      packages = eachSystem (pkgs: suckless.packages { inherit pkgs; });
-
-      devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
-          packages = builtins.attrValues { inherit (pkgs) git nixfmt; };
-        };
-      });
     };
+
+    homeModules = {
+      default = ./nix/home.nix { inherit self; };
+      flexipatch = {
+        imports = [ self.homeModules.default ];
+        suckless.tools = {
+          dwm.enable = true;
+          slstatus.enable = true;
+          dmenu.enable = true;
+          st.enable = true;
+        };
+      };
+    };
+
+    packages = eachSystem (pkgs: import ./nix/package.nix { inherit self pkgs; }
+      // {
+        test = {
+          dmenu = (pkgs.dmenu.overrideAttrs { src = "${self}/flexipatch/dmenu"; }).override {};
+        };
+      }
+    );
+
+    overlays.default = final: prev: let
+      packages = import ./nix/package.nix { pkgs = final; };
+    in { inherit (packages) suckless flexipatch; };
+
+    devShell = eachSystem (pkgs: pkgs.mkShell {
+      packages = [ pkgs.nixfmt pkgs.statix pkgs.deadnix ];
+    });
+  };
 }
