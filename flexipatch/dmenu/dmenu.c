@@ -31,6 +31,7 @@ enum {
 	SchemeNorm,
 	SchemeSel,
 	SchemeOut,
+	SchemeBorder,
 	SchemeNormHighlight,
 	SchemeSelHighlight,
 	SchemeHp,
@@ -249,6 +250,7 @@ drawmenu(void)
 
 	recalculatenumbers();
 	rpad = TEXTW(numbers);
+	rpad += border_width;
 
 	if (quiet && strlen(text) == 0) {
 		if (lines > 0)
@@ -262,7 +264,7 @@ drawmenu(void)
 		/* draw vertical list */
 		for (item = curr; item != next; item = item->right) {
 			i++;
-			drawitem(item, x, y += bh, mw - x);
+			drawitem(item, 0, y += bh, mw);
 		}
 		XResizeWindow(dpy, win, mw, (i + 1) * bh);
 	} else if (matches) {
@@ -926,10 +928,12 @@ setup(void)
 	;
 	win = XCreateWindow(
 		dpy, root,
-		x, y, mw, mh, 0,
+		x, y - (topbar ? 0 : border_width * 2), mw - border_width * 2, mh, border_width,
 		CopyFromParent, CopyFromParent, CopyFromParent,
 		CWOverrideRedirect | CWBackPixel | CWEventMask, &swa
 	);
+	if (border_width)
+		XSetWindowBorder(dpy, win, scheme[SchemeBorder][ColBg].pixel);
 	XSetClassHint(dpy, win, &ch);
 	XChangeProperty(dpy, win, type, XA_ATOM, 32, PropModeReplace,
 			(unsigned char *) &dock, 1);
@@ -972,6 +976,7 @@ usage(void)
 		"\n             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]"
 		"\n            "
 		" [-ex expectkey]"
+		" [-bw width]"
 		" [-hb color] [-hf color] [-hp items]"
 		"\n            "
 		" [-H histfile]"
@@ -1066,6 +1071,8 @@ main(int argc, char *argv[])
 			colors[SchemeSelHighlight][ColFg] = argv[++i];
 		else if (!strcmp(argv[i], "-w"))   /* embedding window id */
 			embed = argv[++i];
+		else if (!strcmp(argv[i], "-bw"))  /* border width around dmenu */
+			border_width = atoi(argv[++i]);
 		else {
 			usage();
 		}
