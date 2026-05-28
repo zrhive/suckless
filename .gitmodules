@@ -1,6 +1,12 @@
-[submodule "dwm-flexipatch"]
-	path = dwm-flexipatch
+[submodule "flexipatch/finalizer"]
+	path = flexipatch/finalizer
+	url = https://github.com/bakkeby/flexipatch-finalizer.git
+[submodule "flexipatch/dwm-flexipatch"]
+	path = flexipatch/dwm-flexipatch
 	url = git@github.com:zrhive/dwm-flexipatch.git
-[submodule "st-flexipatch"]
-	path = st-flexipatch
+[submodule "flexipatch/st-flexipatch"]
+	path = flexipatch/st-flexipatch
 	url = git@github.com:zrhive/st-flexipatch.git
+[submodule "flexipatch/dmenu-flexipatch"]
+	path = flexipatch/dmenu-flexipatch
+	url = git@github.com:zrhive/dmenu-flexipatch.git
