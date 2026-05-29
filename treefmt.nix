@@ -40,7 +40,6 @@ treefmt.withConfig {
         command = "nixfmt";
         includes = [ "*.nix" ];
       };
-
       deadnix = {
         command = "deadnix";
         options = [
@@ -49,7 +48,6 @@ treefmt.withConfig {
         ];
         includes = [ "*.nix" ];
       };
-
       statix = {
         command = "statix-fix";
         includes = [ "*.nix" ];
