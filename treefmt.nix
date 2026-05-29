@@ -2,12 +2,12 @@
   self,
   formats,
   writeShellScriptBin,
-
   treefmt,
   nixfmt,
   deadnix,
   statix,
 }:
+
 let
   statixFix = writeShellScriptBin "statix-fix" ''
     for file in "$@"; do
@@ -20,7 +20,7 @@ let
             "repeated_keys"
           ];
         }
-      } "$file"
+      } -- "$file"
     done
   '';
 in

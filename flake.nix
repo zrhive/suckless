@@ -37,18 +37,19 @@
       );
 
       overlays.default = final: _prev: {
-        # inherit (import ./nix/packages.nix { pkgs = final; }) suckless flexipatch;
         inherit (self.packages.${final.stdenv.hostPlatform.system}) suckless flexipatch;
       };
 
-      # `$ prek install --prepare-hooks`
+      formatter = eachSystem (pkgs: pkgs.callPackage ./treefmt.nix { inherit self; });
+
       devShell = eachSystem (
         pkgs:
         pkgs.mkShellNoCC {
           packages = [
-            (pkgs.callPackage ./treefmt.nix { inherit self; })
             pkgs.prek
-            pkgs.jujutsu
+            self.formatter.${pkgs.stdenv.hostPlatform.system}
+            (pkgs.writeShellScriptBin "hooks-install" "prek install --prepare-hooks")
+            (pkgs.writeShellScriptBin "hooks-runall" "prek run --all-files --show-diff-on-failure")
           ];
         }
       );

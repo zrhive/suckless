@@ -1,20 +1,20 @@
 { config, lib, ... }:
+
+let
+  inherit (lib) mkDefault;
+  inherit (config.suckless) tools packages extraCommands;
+in
 {
   import = [ ./options.nix ];
 
-  environment.systemPackages = config.suckless.packages;
+  environment.systemPackages = packages;
 
-  services.xserver = let
-    inherit (lib) mkDefault;
-    inherit (config.suckless) tools;
-
-  in {
+  services.xserver = {
     enable = true;
-
     windowManager.dwm = {
       enable = mkDefault tools.dwm.enable;
       package = mkDefault tools.dwm.package;
-      extraSessionCommands = mkDefault config.suckless.extraCommands;
+      extraSessionCommands = extraCommands;
     };
   };
 }

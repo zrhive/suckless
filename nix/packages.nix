@@ -18,7 +18,9 @@ in
   inherit (packages.flexipatch) dmenu dwm st;
   inherit (packages.suckless) slstatus;
 
-  /** SUCKLESS */
+  /**
+    SUCKLESS
+  */
   suckless = {
     #: DMENU
     dmenu = pkgs.dmenu.overrideAttrs { src = "${suckless}/dmenu"; };
@@ -30,13 +32,15 @@ in
     st = pkgs.st.overrideAttrs { src = "${suckless}/st"; };
   };
 
-  /** FLEXIPATCH */
+  /**
+    FLEXIPATCH
+  */
   flexipatch = {
     #: DMENU
-    dmenu = (pkgs.dmenu.overrideAttrs { src = "${flexipatch}/dmenu"; }).override {};
+    dmenu = (pkgs.dmenu.overrideAttrs { src = "${flexipatch}/dmenu"; }).override { };
 
     #: DMENU
-    dwm = (pkgs.dwm.overrideAttrs { src = "${flexipatch}/dwm"; }).override {};
+    dwm = (pkgs.dwm.overrideAttrs { src = "${flexipatch}/dwm"; }).override { };
 
     #: ST
     st = (pkgs.st.overrideAttrs { src = "${flexipatch}/st"; }).override {

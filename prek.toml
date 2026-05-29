@@ -1,26 +1,23 @@
+exclude = "(^suckless/.*|^flexipatch/.*)"
+
 [[repos]]
 repo = "builtin"
-exclude = {
-  glob = [ "suckless/**", "flexipatch/**" ]
-}
-default_stages = "pre-commit"
 hooks = [
   { id = "check-toml" },
   { id = "end-of-file-fixer" },
   {
     id = "trailing-whitespace",
-    args = [ "--markdown-linebreak-ext=*" ]
+    args = [ "--markdown-linebreak-ext=*" ],
   },
 ]
 
 [[repos]]
 repo = "local"
-default_stages = "pre-push"
 hooks = [
   {
     id = "treefmt",
     name = "treefmt",
     entry = "treefmt --ci",
     language = "system",
-  }
+  },
 ]
