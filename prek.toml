@@ -15,7 +15,7 @@ hooks = [
 
 [[repos]]
 repo = "local"
-default_stages = "pre-commit"
+default_stages = "pre-push"
 hooks = [
   {
     id = "treefmt",
