@@ -47,8 +47,6 @@
         pkgs.mkShellNoCC {
           packages = [
             pkgs.prek
-            pkgs.uv
-            pkgs.python314
             self.formatter.${pkgs.stdenv.hostPlatform.system}
             (pkgs.writeShellScriptBin "hooks-install" "prek install --prepare-hooks")
             (pkgs.writeShellScriptBin "hooks-runall" "prek run --all-files --show-diff-on-failure")
