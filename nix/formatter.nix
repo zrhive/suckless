@@ -1,11 +1,13 @@
 {
   self,
-  formats,
-  writeShellScriptBin,
+
   treefmt,
   nixfmt,
   deadnix,
   statix,
+
+  formats,
+  writeShellScriptBin,
 }:
 
 let
@@ -23,8 +25,7 @@ let
       } -- "$file"
     done
   '';
-in
-treefmt.withConfig {
+
   runtimeInputs = [
     nixfmt
     deadnix
@@ -34,24 +35,24 @@ treefmt.withConfig {
   settings = {
     tree-root-file = "${self}/flake.nix";
     on-unmatched = "info";
-
     formatter = {
       nixfmt = {
-        command = "nixfmt";
         includes = [ "*.nix" ];
+        command = "nixfmt";
       };
       deadnix = {
+        includes = [ "*.nix" ];
         command = "deadnix";
         options = [
           "--edit"
           "--no-lambda-arg"
         ];
-        includes = [ "*.nix" ];
       };
       statix = {
-        command = "statix-fix";
         includes = [ "*.nix" ];
+        command = "statix-fix";
       };
     };
   };
-}
+in
+treefmt.withConfig { inherit runtimeInputs settings; }
