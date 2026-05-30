@@ -15,13 +15,13 @@
     in
     {
       nixosModules = {
-        default = ./nix/nixos.nix;
+        default = ./nix/modules/nixos.nix;
         suckless = self.nixosModules.default;
         flexipatch = self.nixosModules.default // ./nix/common.nix { inherit self; };
       };
 
       homeModules = {
-        default = ./nix/home.nix;
+        default = ./nix/modules/home.nix;
         suckless = self.homeModules.default;
         flexipatch = self.homeModules.default // ./nix/common.nix { inherit self; };
       };
@@ -40,13 +40,15 @@
         inherit (self.packages.${final.stdenv.hostPlatform.system}) suckless flexipatch;
       };
 
-      formatter = eachSystem (pkgs: pkgs.callPackage ./treefmt.nix { inherit self; });
+      formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
 
       devShell = eachSystem (
         pkgs:
         pkgs.mkShellNoCC {
           packages = [
             pkgs.prek
+            pkgs.uv
+            pkgs.python314
             self.formatter.${pkgs.stdenv.hostPlatform.system}
             (pkgs.writeShellScriptBin "hooks-install" "prek install --prepare-hooks")
             (pkgs.writeShellScriptBin "hooks-runall" "prek run --all-files --show-diff-on-failure")
