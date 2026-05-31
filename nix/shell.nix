@@ -1,28 +1,23 @@
+{ self, pkgs }:
 {
-  self,
-  stdenv,
-  mkShellNoCC,
-  writeShellScriptBin,
-  prek,
-}:
+  default = pkgs.mkShellNoCC {
+    packages = [
+      #: formatter
+      self.formatter.${pkgs.stdenv.hostPlatform.system}
 
-let
-  #: accessible via: `$ hooks-install`
-  installHooks = writeShellScriptBin "hooks-install" ''
-    prek install --prepare-hooks
-  '';
+      #: accessible via: `$ hooks-install`
+      (pkgs.writeShellScriptBin "hooks-install" ''
+        prek install --prepare-hooks
+      '')
 
-  #: accessible via: `$ hooks-runall`
-  runHooks = writeShellScriptBin "hooks-runall" ''
-    git add .
-    prek run --all-files --show-diff-on-failure
-  '';
-in
-mkShellNoCC {
-  packages = [
-    self.formatter.${stdenv.hostPlatform.system}
-    installHooks
-    runHooks
-    prek
-  ];
+      #: accessible via: `$ hooks-runall`
+      (pkgs.writeShellScriptBin "hooks-runall" ''
+        git add .
+        prek run --all-files --show-diff-on-failure
+      '')
+
+      #: git hooks runner
+      pkgs.prek
+    ];
+  };
 }

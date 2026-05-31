@@ -17,23 +17,35 @@
       nixosModules = {
         default = ./nix/modules/nixos.nix;
         suckless = self.nixosModules.default;
-        flexipatch = self.nixosModules.default // ./nix/common.nix { inherit self; };
+        flexipatch = {
+          imports = [
+            self.nixosModules.default
+            (./nix/modules/common.nix { inherit self; })
+          ];
+        };
       };
 
       homeModules = {
         default = ./nix/modules/home.nix;
         suckless = self.homeModules.default;
-        flexipatch = self.homeModules.default // ./nix/common.nix { inherit self; };
+        flexipatch = {
+          imports = [
+            self.homeModules.default
+            (./nix/modules/common.nix { inherit self; })
+          ];
+        };
       };
 
-      overlays.default = final: _prev: {
-        inherit (self.packages.${final.stdenv.hostPlatform.system}) suckless flexipatch;
-      };
-
-      packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; });
+      overlays = import ./nix/overlays.nix { inherit (self) packages; };
+      packages = eachSystem (
+        pkgs:
+        import ./nix/packages.nix { inherit self pkgs; }
+        // {
+          test = (pkgs.dwm.overrideAttrs { src = ./flexipatch/dwm; }).override { };
+        }
+      );
 
       formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
-
-      devShell = eachSystem (pkgs: pkgs.callPackage ./nix/shell.nix { inherit self; });
+      devShells = eachSystem (pkgs: import ./nix/shell.nix { inherit self pkgs; });
     };
 }
