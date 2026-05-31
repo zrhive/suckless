@@ -1,11 +1,9 @@
 {
   self,
-
   treefmt,
   nixfmt,
   deadnix,
   statix,
-
   formats,
   writeShellScriptBin,
 }:
@@ -25,7 +23,8 @@ let
       } -- "$file"
     done
   '';
-
+in
+treefmt.withConfig {
   runtimeInputs = [
     nixfmt
     deadnix
@@ -37,22 +36,21 @@ let
     on-unmatched = "info";
     formatter = {
       nixfmt = {
-        includes = [ "*.nix" ];
         command = "nixfmt";
+        includes = [ "*.nix" ];
       };
       deadnix = {
-        includes = [ "*.nix" ];
         command = "deadnix";
+        includes = [ "*.nix" ];
         options = [
           "--edit"
           "--no-lambda-arg"
         ];
       };
       statix = {
-        includes = [ "*.nix" ];
         command = "statix-fix";
+        includes = [ "*.nix" ];
       };
     };
   };
-in
-treefmt.withConfig { inherit runtimeInputs settings; }
+}
