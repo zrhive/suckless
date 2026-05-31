@@ -14,7 +14,9 @@ repos:
     hooks:
       - id: treefmt
         name: treefmt
-        entry: treefmt --ci
+        description: Run formatters to worktree
+        entry: treefmt
+        args: [--no-cache]
         language: system
         files: \.nix$
         types: [file]
