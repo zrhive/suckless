@@ -38,7 +38,7 @@ in
   #: DMENU
   flexipatch-dmenu = (pkgs.dmenu.overrideAttrs { src = "${flexipatch}/dmenu"; }).override { };
 
-  #: DMENU
+  #: DWM
   flexipatch-dwm = (pkgs.dwm.overrideAttrs { src = "${flexipatch}/dwm"; }).override {
     extraLibs = [
       #: For alpha patch
@@ -55,7 +55,7 @@ in
       #: xcursor patch is not included in flexipatch, solve by adding the patch here
       (pkgs.fetchpatch {
         url = "https://raw.githubusercontent.com/zrhive/suckless/refs/heads/xcursor-patch/nix/dwm-xcursor-20260601.patch";
-        hash = "sha256-VEbTx1RobxSaP/Svt654HFsbgox5dpJNra7kHiVBFuM=";
+        hash = "sha256-InxLPMplHw6maqlqBlSArjX2d2efCaMru0c06nn4Vy4=";
       })
     ];
   };
