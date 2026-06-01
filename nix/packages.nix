@@ -39,7 +39,23 @@ in
   flexipatch-dmenu = (pkgs.dmenu.overrideAttrs { src = "${flexipatch}/dmenu"; }).override { };
 
   #: DMENU
-  flexipatch-dwm = (pkgs.dwm.overrideAttrs { src = "${flexipatch}/dwm"; }).override { };
+  flexipatch-dwm = (pkgs.dwm.overrideAttrs { src = "${flexipatch}/dwm"; }).override {
+    extraLibs = [
+      #: For alpha patch
+      pkgs.libxrender
+      #: For rounded corners patch
+      pkgs.libxext
+      #: For swallow patch
+      pkgs.libxcb
+      #: For xcursor patch
+      pkgs.libxcursor
+    ];
+
+    pacthes = [
+      #: xcursor patch is not included in flexipatch, solve by adding the patch here
+      (builtins.fetchurl "https://dwm.suckless.org/patches/xcursor/dwm-xcursor-20250909-74edc27.diff")
+    ];
+  };
 
   #: ST
   flexipatch-st = (pkgs.st.overrideAttrs { src = "${flexipatch}/st"; }).override {
