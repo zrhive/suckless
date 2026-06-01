@@ -51,9 +51,12 @@ in
       pkgs.libxcursor
     ];
 
-    pacthes = [
+    patches = [
       #: xcursor patch is not included in flexipatch, solve by adding the patch here
-      (builtins.fetchurl "https://dwm.suckless.org/patches/xcursor/dwm-xcursor-20250909-74edc27.diff")
+      (pkgs.fetchpatch {
+        url = "https://raw.githubusercontent.com/zrhive/suckless/refs/heads/xcursor-patch/nix/dwm-xcursor-20260601.patch";
+        hash = "sha256-VEbTx1RobxSaP/Svt654HFsbgox5dpJNra7kHiVBFuM=";
+      })
     ];
   };
 
