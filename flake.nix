@@ -2,7 +2,7 @@
   description = "suckless configuration that sucks less";
 
   inputs = {
-    self.submodules = true;
+    # self.submodules = true;
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
@@ -40,7 +40,7 @@
 
       overlays = import ./nix/overlays.nix { inherit (self) packages; };
       packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; });
-      formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
       devShells = eachSystem (pkgs: import ./nix/shell.nix { inherit self pkgs; });
+      formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
     };
 }
