@@ -22,7 +22,7 @@
         flexipatch = {
           imports = [
             self.nixosModules.default
-            (./nix/modules/common.nix { inherit self; })
+            (import ./nix/modules/common.nix { inherit self; })
           ];
         };
       };
@@ -33,7 +33,7 @@
         flexipatch = {
           imports = [
             self.homeModules.default
-            (./nix/modules/common.nix { inherit self; })
+            (import ./nix/modules/common.nix { inherit self; })
           ];
         };
       };
