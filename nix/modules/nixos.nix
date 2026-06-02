@@ -14,7 +14,7 @@ in
     windowManager.dwm = {
       enable = mkDefault tools.dwm.enable;
       package = mkDefault tools.dwm.package;
-      extraSessionCommands = extraCommands;
+      extraSessionCommands = mkDefault extraCommands;
     };
   };
 }

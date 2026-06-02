@@ -77,13 +77,11 @@
       inherit (config.suckless) tools;
       toolList = attrValues config.suckless.tools;
       anyToolEnabled = any (tool: tool.enable) toolList;
-
-      packages = concatMap (tool: optional tool.enable tool.package) toolList;
-      extraCommands = concatMapStringsSep "\n" (tool: tool.command) toolList;
     in
     mkIf (config.suckless.enable || anyToolEnabled) {
       suckless = {
-        inherit packages extraCommands;
+        packages = concatMap (tool: optional tool.enable tool.package) toolList;
+        extraCommands = concatMapStringsSep "\n" (tool: tool.command) toolList;
 
         tools.slstatus.command = optionalString (
           tools.slstatus.enable && tools.dwm.enable
