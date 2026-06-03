@@ -65,6 +65,7 @@
   config =
     let
       inherit (lib)
+        getExe
         mkIf
         any
         attrValues
