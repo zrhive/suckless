@@ -5,7 +5,7 @@ let
   inherit (config.suckless) tools packages extraCommands;
 in
 {
-  import = [ ./options.nix ];
+  imports = [ ./options.nix ];
 
   home.packages = packages;
 
