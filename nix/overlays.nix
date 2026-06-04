@@ -31,7 +31,6 @@
     inherit (packages.${final.stdenv.hostPlatform.system})
       flexipatch-dmenu
       flexipatch-dwm
-      flexipatch-slstatus
       flexipatch-st
       ;
   };
