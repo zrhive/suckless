@@ -10,7 +10,7 @@ in
   environment.systemPackages = packages;
 
   services.xserver = {
-    enable = true;
+    enable = mkDefault true;
     windowManager.dwm = {
       enable = mkDefault tools.dwm.enable;
       package = mkDefault tools.dwm.package;

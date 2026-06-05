@@ -1,10 +1,7 @@
 {
   description = "suckless configuration that sucks less";
 
-  inputs = {
-    # self.submodules = true;
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =
     { self, nixpkgs }:
@@ -22,7 +19,7 @@
         flexipatch = {
           imports = [
             self.nixosModules.default
-            (import ./nix/modules/common.nix { inherit self; })
+            (import ./nix/modules { inherit self; })
           ];
         };
       };
@@ -33,7 +30,7 @@
         flexipatch = {
           imports = [
             self.homeModules.default
-            (import ./nix/modules/common.nix { inherit self; })
+            (import ./nix/modules { inherit self; })
           ];
         };
       };
