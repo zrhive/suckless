@@ -14,7 +14,7 @@
 
       tools = mkOption {
         type = types.attrsOf (
-          types.submodules (
+          types.submodule (
             { name, ... }:
             {
               options = {
