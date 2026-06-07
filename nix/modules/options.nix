@@ -56,7 +56,7 @@
         packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (lib.attrValues tools);
 
         extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
-          lib.attrsValues tools
+          lib.attrValues tools
         );
 
         tools.slstatus.command = lib.optionalString (
