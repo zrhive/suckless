@@ -10,8 +10,11 @@ in
   home.packages = packages;
 
   xsession = {
-    enable = mkDefault true;
+    enable = mkDefault tools.dwm.enable;
     initExtra = mkDefault extraCommands;
-    windowManager.command = lib.optionalString tools.dwm.enable "${lib.getExe tools.dwm.package}";
+
+    windowManager.command = lib.optionalString tools.dwm.enable ''
+      ${lib.getExe tools.dwm.package}
+    '';
   };
 }
