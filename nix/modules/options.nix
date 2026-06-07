@@ -64,29 +64,18 @@
 
   config =
     let
-      inherit (lib)
-        getExe
-        mkIf
-        any
-        attrValues
-        optional
-        optionalString
-        concatMap
-        concatMapStringsSep
-        ;
-
-      inherit (config.suckless) tools;
-      toolList = attrValues config.suckless.tools;
-      anyToolEnabled = any (tool: tool.enable) toolList;
+      tools = config.suckless.tools;
+      toolList = lib.attrValues tools;
+      anyToolEnabled = lib.any (tool: tool.enable) toolList;
     in
-    mkIf (config.suckless.enable || anyToolEnabled) {
+    lib.mkIf (config.suckless.enable || anyToolEnabled) {
       suckless = {
-        packages = concatMap (tool: optional tool.enable tool.package) toolList;
-        extraCommands = concatMapStringsSep "\n" (tool: tool.command) toolList;
+        packages = lib.concatMap (tool: lib.optional tool.enable tool.package) toolList;
+        extraCommands = lib.concatMapStringsSep "\n" (tool: tool.command) toolList;
 
-        tools.slstatus.command = optionalString (
+        tools.slstatus.command = lib.optionalString (
           tools.slstatus.enable && tools.dwm.enable
-        ) "${getExe tools.slstatus.package}";
+        ) "${lib.getExe tools.slstatus.package}";
       };
     };
 }
