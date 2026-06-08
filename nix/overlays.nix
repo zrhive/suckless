@@ -1,19 +1,19 @@
 { self }:
 
 let
-  packages = self.packages.${final.stdenv.hostPlatform.system};
+  packages = final: self.packages.${final.stdenv.hostPlatform.system};
 in
 {
   default = final: prev: {
-    dmenu = packages.flexipatch-dmenu;
-    dwm = packages.flexipatch-dwm;
-    st = packages.flexipatch-st;
-    slstatus = packages.suckless-slstatus;
+    dmenu = (packages final).flexipatch-dmenu;
+    dwm = (packages final).flexipatch-dwm;
+    st = (packages final).flexipatch-st;
+    slstatus = (packages final).suckless-slstatus;
   };
 
   #: SUCKLESS
   suckless = final: prev: {
-    inherit (packages)
+    inherit (packages final)
       suckless-dmenu
       suckless-dwm
       suckless-st
@@ -23,7 +23,7 @@ in
 
   #: FLEXIPATCH
   flexipatch = final: prev: {
-    inherit (packages)
+    inherit (packages final)
       flexipatch-dmenu
       flexipatch-dwm
       flexipatch-st
