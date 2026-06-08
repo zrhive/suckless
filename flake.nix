@@ -35,7 +35,7 @@
         };
       };
 
-      overlays = import ./nix/overlays.nix { inherit (self) packages; };
+      overlays = import ./nix/overlays.nix { inherit self; };
       packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; });
       devShells = eachSystem (pkgs: import ./nix/shell.nix { inherit self pkgs; });
       formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
