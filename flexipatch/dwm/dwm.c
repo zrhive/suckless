@@ -30,7 +30,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -40,6 +39,7 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
+#include <X11/Xcursor/Xcursor.h>
 
 #include "drw.h"
 #include "util.h"
@@ -73,9 +73,7 @@ enum {
 	CurResizeBL,
 	CurResizeTR,
 	CurResizeTL,
-	CurResizeHorzArrow,
-	CurResizeVertArrow,
-	CurIronCross,
+	CurDragFact,
 	CurNormal,
 	CurResize,
 	CurMove,
@@ -205,11 +203,8 @@ struct Client {
 	int wasfloating;
 	int iscentered;
 	int beingmoved;
-	int isterminal, noswallow;
-	pid_t pid;
 	Client *next;
 	Client *snext;
-	Client *swallowing;
 	Monitor *mon;
 	Window win;
 };
@@ -272,8 +267,6 @@ typedef struct {
 	int iscentered;
 	int isfloating;
 	int isfakefullscreen;
-	int isterminal;
-	int noswallow;
 	const char *floatpos;
 	int monitor;
 } Rule;
@@ -285,8 +278,8 @@ typedef struct {
 #define CENTERED , .iscentered = 1
 #define PERMANENT
 #define FAKEFULLSCREEN , .isfakefullscreen = 1
-#define NOSWALLOW , .noswallow = 1
-#define TERMINAL , .isterminal = 1
+#define NOSWALLOW
+#define TERMINAL
 #define SWITCHTAG , .switchtag = 1
 
 /* function declarations */
@@ -355,6 +348,7 @@ static void setup(void);
 static void seturgent(Client *c, int urg);
 static void sigchld(int unused);
 static void showhide(Client *c);
+static int skip_bar_rule(Bar *bar, const BarRule *br);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
@@ -450,7 +444,6 @@ applyrules(Client *c)
 	XClassHint ch = { NULL, NULL };
 
 	/* rule matching */
-	c->noswallow = -1;
 	c->isfloating = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
@@ -467,8 +460,6 @@ applyrules(Client *c)
 		{
 			c->iscentered = r->iscentered;
 			c->fakefullscreen = r->isfakefullscreen;
-			c->isterminal = r->isterminal;
-			c->noswallow = r->noswallow;
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -479,10 +470,7 @@ applyrules(Client *c)
 				setfloatpos(c, r->floatpos);
 			}
 
-			if (r->switchtag && (
-				c->noswallow > 0 ||
-				!termforwin(c) ||
-				!(c->isfloating && swallowfloating && c->noswallow < 0)))
+			if (r->switchtag)
 			{
 				unfocus(selmon->sel, 1, NULL);
 				selmon = c->mon;
@@ -678,7 +666,6 @@ buttonpress(XEvent *e)
 			buttons[i].func(
 				(
 					click == ClkTagBar
-					|| click == ClkWinTitle
 				) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg
 			);
 		}
@@ -1005,8 +992,6 @@ destroynotify(XEvent *e)
 
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
-	else if ((c = swallowingclient(ev->window)))
-		unmanage(c->swallowing, 1);
 	else if (showsystray && (c = wintosystrayicon(ev->window))) {
 		removesystrayicon(c);
 		drawbarwin(systray->bar);
@@ -1057,7 +1042,7 @@ void
 drawbar(Monitor *m)
 {
 	Bar *bar;
-	
+
 	if (m->showbar)
 		for (bar = m->bar; bar; bar = bar->next)
 			drawbarwin(bar);
@@ -1096,9 +1081,7 @@ drawbarwin(Bar *bar)
 	drw_rect(drw, lx, bar->borderpx, lw, bar->bh - 2 * bar->borderpx, 1, 1);
 	for (r = 0; r < LENGTH(barrules); r++) {
 		br = &barrules[r];
-		if (br->bar != bar->idx || !br->widthfunc || (br->monitor == 'A' && bar->mon != selmon))
-			continue;
-		if (br->monitor != 'A' && br->monitor != -1 && br->monitor != bar->mon->num)
+		if (skip_bar_rule(bar, br))
 			continue;
 		drw_setscheme(drw, scheme[SchemeNorm]);
 		warg.w = (br->alignment < BAR_ALIGN_RIGHT_LEFT ? lw : rw);
@@ -1190,6 +1173,39 @@ drawbarwin(Bar *bar)
 		arrange(bar->mon);
 	} else
 		drw_map(drw, bar->win, 0, 0, bar->bw, bar->bh);
+}
+
+int
+skip_bar_rule(Bar *bar, const BarRule *br)
+{
+	Monitor *m = selmon;
+
+	/* Skip if rule is for another bar */
+	if (br->bar != bar->idx)
+		return 1;
+
+	/* Skip if rule is not drawable */
+	if (!br->widthfunc)
+		return 1;
+
+	/* Special handling for rules referring to the active monitor */
+	if (br->monitor == 'A') {
+		/* If the active monitor does not have the bars shown, then
+		 * allow the systray to show on the first monitor that has
+		 * bars shown. */
+		if (br->widthfunc == &width_systray && !m->showbar) {
+			for (m = mons; m && !m->showbar; m = m->next);
+		}
+
+		/* Skip if rule is not for the designated / active monitor */
+		if (bar->mon != m)
+			return 1;
+	/* Skip if the rule is for another monitor */
+	} else if (br->monitor != -1 && br->monitor != bar->mon->num) {
+		return 1;
+	}
+
+	return 0;
 }
 
 void
@@ -1287,16 +1303,16 @@ focusstack(const Arg *arg)
 	if (!selmon->sel)
 		return;
 	if (arg->i > 0) {
-		for (c = selmon->sel->next; c && (!ISVISIBLE(c) || (arg->i == 1 && HIDDEN(c))); c = c->next);
+		for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
 		if (!c)
-			for (c = selmon->clients; c && (!ISVISIBLE(c) || (arg->i == 1 && HIDDEN(c))); c = c->next);
+			for (c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
 	} else {
 		for (i = selmon->clients; i != selmon->sel; i = i->next)
-			if (ISVISIBLE(i) && !(arg->i == -1 && HIDDEN(i)))
+			if (ISVISIBLE(i))
 				c = i;
 		if (!c)
 			for (; i; i = i->next)
-				if (ISVISIBLE(i) && !(arg->i == -1 && HIDDEN(i)))
+				if (ISVISIBLE(i))
 					c = i;
 	}
 	if (c) {
@@ -1489,13 +1505,11 @@ void
 manage(Window w, XWindowAttributes *wa)
 {
 	Client *c, *t = NULL;
-	Client *term = NULL;
 	Window trans = None;
 	XWindowChanges wc;
 
 	c = ecalloc(1, sizeof(Client));
 	c->win = w;
-	c->pid = winpid(w);
 	/* geometry */
 	c->sfx = c->sfy = c->sfw = c->sfh = -9999;
 	c->x = c->oldx = wa->x;
@@ -1518,9 +1532,6 @@ manage(Window w, XWindowAttributes *wa)
 			c->iscentered = 1;
 		c->bw = borderpx;
 		applyrules(c);
-		term = termforwin(c);
-		if (term)
-			c->mon = term->mon;
 	}
 
 	if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
@@ -1569,16 +1580,12 @@ manage(Window w, XWindowAttributes *wa)
 		(unsigned char *) &(c->win), 1);
 	XMoveResizeWindow(dpy, c->win, c->x + 2 * sw, c->y, c->w, c->h); /* some windows require this */
 
-	if (!HIDDEN(c))
-		setclientstate(c, NormalState);
+	setclientstate(c, NormalState);
 	if (c->mon == selmon)
 		unfocus(selmon->sel, 0, c);
 	c->mon->sel = c;
-	if (!(term && swallow(term, c))) {
-		arrange(c->mon);
-		if (!HIDDEN(c))
-			XMapWindow(dpy, c->win);
-	}
+	arrange(c->mon);
+	XMapWindow(dpy, c->win);
 	focus(NULL);
 
 }
@@ -1710,7 +1717,7 @@ movemouse(const Arg *arg)
 Client *
 nexttiled(Client *c)
 {
-	for (; c && (c->isfloating || !ISVISIBLE(c) || HIDDEN(c)); c = c->next);
+	for (; c && (c->isfloating || !ISVISIBLE(c)); c = c->next);
 	return c;
 }
 
@@ -1983,8 +1990,6 @@ run(void)
 void
 scan(void)
 {
-	scanner = 1;
-	char swin[256];
 	unsigned int i, num;
 	Window d1, d2, *wins = NULL;
 	XWindowAttributes wa;
@@ -1996,8 +2001,6 @@ scan(void)
 				continue;
 			if (wa.map_state == IsViewable || getstate(wins[i]) == IconicState)
 				manage(wins[i], &wa);
-			else if (gettextprop(wins[i], netatom[NetClientList], swin, sizeof swin))
-				manage(wins[i], &wa);
 		}
 		for (i = 0; i < num; i++) { /* now the transients */
 			if (!XGetWindowAttributes(dpy, wins[i], &wa))
@@ -2008,7 +2011,6 @@ scan(void)
 		}
 		XFree(wins);
 	}
-	scanner = 0;
 }
 
 void
@@ -2095,6 +2097,7 @@ setfocus(Client *c)
 void
 setfullscreen(Client *c, int fullscreen)
 {
+	Monitor *m = c->mon;
 	XEvent ev;
 	int savestate = 0, restorestate = 0;
 
@@ -2145,12 +2148,12 @@ setfullscreen(Client *c, int fullscreen)
 	} else if (restorestate && (c->oldstate & (1 << 1))) {
 		c->bw = c->oldbw;
 		c->isfloating = c->oldstate = c->oldstate & 1;
-		c->x = c->oldx;
-		c->y = c->oldy;
-		c->w = c->oldw;
-		c->h = c->oldh;
+		c->x = MAX(m->mx, c->oldx);
+		c->y = MAX(m->my, c->oldy);
+		c->w = MIN(c->oldw, m->mw - (c->x - m->mx));
+		c->h = MIN(c->oldh, m->mh - (c->y - m->my));
 		resizeclient(c, c->x, c->y, c->w, c->h);
-		restack(c->mon);
+		arrange(m);
 	} else
 		resizeclient(c, c->x, c->y, c->w, c->h);
 
@@ -2261,16 +2264,14 @@ setup(void)
 	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 	motifatom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
 	/* init cursors */
-	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
-	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
+	cursor[CurNormal] = drw_cur_create(drw, "left_ptr");
+	cursor[CurResize] = drw_cur_create(drw, "se-resize");
 	cursor[CurResizeBR] = drw_cur_create(drw, XC_bottom_right_corner);
 	cursor[CurResizeBL] = drw_cur_create(drw, XC_bottom_left_corner);
 	cursor[CurResizeTR] = drw_cur_create(drw, XC_top_right_corner);
 	cursor[CurResizeTL] = drw_cur_create(drw, XC_top_left_corner);
-	cursor[CurResizeHorzArrow] = drw_cur_create(drw, XC_sb_h_double_arrow);
-	cursor[CurResizeVertArrow] = drw_cur_create(drw, XC_sb_v_double_arrow);
-	cursor[CurIronCross] = drw_cur_create(drw, XC_iron_cross);
-	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
+	cursor[CurDragFact] = drw_cur_create(drw, XC_rightbutton);
+	cursor[CurMove] = drw_cur_create(drw, "fleur");
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
@@ -2532,20 +2533,6 @@ unmanage(Client *c, int destroyed)
 
 	m = c->mon;
 
-	if (c->swallowing) {
-		unswallow(c);
-		return;
-	}
-
-	Client *s = swallowingclient(c->win);
-	if (s) {
-		free(s->swallowing);
-		s->swallowing = NULL;
-		arrange(m);
-		focus(NULL);
-		return;
-	}
-
 	detach(c);
 	detachstack(c);
 	if (!destroyed) {
@@ -2563,8 +2550,6 @@ unmanage(Client *c, int destroyed)
 	}
 
 	free(c);
-	if (s)
-		return;
 	arrange(m);
 	focus(NULL);
 	updateclientlist();
@@ -2973,13 +2958,11 @@ main(int argc, char *argv[])
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
-	if (!(xcon = XGetXCBConnection(dpy)))
-		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
 	autostart_exec();
 	setup();
 #ifdef __OpenBSD__
-	if (pledge("stdio rpath proc exec ps", NULL) == -1)
+	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();

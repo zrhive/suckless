@@ -11,7 +11,6 @@
 #include "bar_statuscmd.c"
 #include "bar_tags.c"
 #include "bar_systray.c"
-#include "bar_wintitleactions.c"
 
 /* Other patches */
 #include "attachx.c"
@@ -20,7 +19,7 @@
 #include "cool_autostart.c"
 #include "cyclelayouts.c"
 #include "decorationhints.c"
-#include "dragcfact.c"
+#include "dragfact.c"
 #include "exresize.c"
 #include "fakefullscreenclient.c"
 #include "floatpos.c"
@@ -33,11 +32,9 @@
 #include "placemouse.c"
 #include "rotatestack.c"
 #include "roundedcorners.c"
-#include "swallow.c"
 #include "tapresize.c"
 #include "togglefullscreen.c"
 #include "vanitygaps.c"
-#include "dragmfact.c"
 /* Layouts */
 #include "layout_facts.c"
 #include "layout_bstack.c"

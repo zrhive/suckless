@@ -8,7 +8,6 @@
 static const unsigned int borderpx       = 0;   /* border pixel of windows */
 static const int corner_radius           = 10;
 static const unsigned int snap           = 32;  /* snap pixel */
-static const int swallowfloating         = 0;   /* 1 means swallow floating windows by default */
 static int nomodbuttons                  = 1;   /* allow client mouse button bindings that have no modifier */
 static const unsigned int gappih         = 20;  /* horiz inner gap between windows */
 static const unsigned int gappiv         = 10;  /* vert inner gap between windows */
@@ -220,8 +219,6 @@ static const int resizehints = 0;    /* 1 means respect size hints in tiled resi
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
 static const int refreshrate_placemouse = 60; /* refresh rate (per second) for placemouse */
-static const int refreshrate_dragmfact = 40; /* refresh rate (per second) for dragmfact */
-static const int refreshrate_dragcfact = 60; /* refresh rate (per second) for dragcfact */
 static const int decorhints  = 1;    /* 1 means respect decoration hints */
 
 /* mouse scroll resize */
@@ -335,8 +332,6 @@ static const Key keys[] = {
 	{ MODKEY|Mod4Mask,              XK_0,          togglegaps,             {0} },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_0,          defaultgaps,            {0} },
 	{ MODKEY,                       XK_Tab,        view,                   {0} },
-	{ MODKEY|ControlMask,           XK_z,          showhideclient,         {0} },
-	{ MODKEY|ControlMask,           XK_s,          unhideall,              {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,             {0} },
 	{ MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
 	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
@@ -448,8 +443,6 @@ static const Button buttons[] = {
 	/* click                event mask           button          function        argument */
 	{ ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,                   Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,                   Button1,        togglewin,      {0} },
-	{ ClkWinTitle,          0,                   Button3,        showhideclient, {0} },
 	{ ClkWinTitle,          0,                   Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,                   Button1,        spawn,          {.v = statuscmd } },
 	{ ClkStatusText,        0,                   Button2,        spawn,          {.v = statuscmd } },
@@ -466,13 +459,12 @@ static const Button buttons[] = {
 	 */
 	{ ClkClientWin,         MODKEY,              Button1,        moveorplace,    {.i = 1} },
 	{ ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
-	{ ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },
+	{ ClkClientWin,         MODKEY,              Button3,        resizeorfacts,  {0} },
+	{ ClkClientWin,         MODKEY|ShiftMask,    Button3,        resizemouse,    {0} },
 	{ ClkClientWin,         MODKEY,              Button4,        resizemousescroll, {.v = &scrollargs[0]} },
 	{ ClkClientWin,         MODKEY,              Button5,        resizemousescroll, {.v = &scrollargs[1]} },
 	{ ClkClientWin,         MODKEY,              Button6,        resizemousescroll, {.v = &scrollargs[2]} },
 	{ ClkClientWin,         MODKEY,              Button7,        resizemousescroll, {.v = &scrollargs[3]} },
-	{ ClkClientWin,         MODKEY|ShiftMask,    Button3,        dragcfact,      {0} },
-	{ ClkClientWin,         MODKEY|ShiftMask,    Button1,        dragmfact,      {0} },
 	{ ClkTagBar,            0,                   Button1,        view,           {0} },
 	{ ClkTagBar,            0,                   Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,              Button1,        tag,            {0} },
