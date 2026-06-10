@@ -46,18 +46,18 @@ in
       #: For rounded corners patch
       pkgs.libxext
       #: For swallow patch
-      pkgs.libxcb
+      # pkgs.libxcb
       #: For xcursor patch
-      pkgs.libxcursor
+      # pkgs.libxcursor
     ];
 
-    patches = [
-      #: xcursor patch is not included in flexipatch, solve by adding the patch here
-      (pkgs.fetchpatch {
-        url = "https://raw.githubusercontent.com/zrhive/suckless/refs/heads/xcursor-patch/nix/dwm-xcursor-20260601.patch";
-        hash = "sha256-InxLPMplHw6maqlqBlSArjX2d2efCaMru0c06nn4Vy4=";
-      })
-    ];
+    # patches = [
+    #   #: xcursor patch is not included in flexipatch, solve by adding the patch here
+    #   (pkgs.fetchpatch {
+    #     url = "https://raw.githubusercontent.com/zrhive/suckless/refs/heads/xcursor-patch/nix/dwm-xcursor-20260601.patch";
+    #     hash = "sha256-InxLPMplHw6maqlqBlSArjX2d2efCaMru0c06nn4Vy4=";
+    #   })
+    # ];
   };
 
   #: ST

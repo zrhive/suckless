@@ -34,11 +34,13 @@ treefmt.withConfig {
   settings = {
     tree-root-file = "${self}/flake.nix";
     on-unmatched = "info";
+
     formatter = {
       nixfmt = {
         command = "nixfmt";
         includes = [ "*.nix" ];
       };
+
       deadnix = {
         command = "deadnix";
         includes = [ "*.nix" ];
@@ -47,6 +49,7 @@ treefmt.withConfig {
           "--no-lambda-arg"
         ];
       };
+
       statix = {
         command = "statix-fix";
         includes = [ "*.nix" ];
