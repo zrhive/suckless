@@ -13,6 +13,8 @@
         );
     in
     {
+      packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; });
+
       nixosModules = {
         default = ./nix/modules/nixos.nix;
         suckless = self.nixosModules.default;
@@ -35,9 +37,36 @@
         };
       };
 
-      overlays = import ./nix/overlays.nix { inherit self; };
-      packages = eachSystem (pkgs: import ./nix/packages.nix { inherit self pkgs; });
-      devShells = eachSystem (pkgs: import ./nix/shell.nix { inherit self pkgs; });
+      overlays.default =
+        final: _:
+        let
+          packages = final: self.packages.${final.stdenv.hostPlatform.system};
+        in
+        {
+          dmenu = (packages final).flexipatch-dmenu;
+          dwm = (packages final).flexipatch-dwm;
+          st = (packages final).flexipatch-st;
+          slstatus = (packages final).suckless-slstatus;
+        };
+
       formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
+
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShellNoCC {
+          packages = [
+            #: accessible via: `$ hooks-install`
+            (pkgs.writeShellScriptBin "hooks-install" ''
+              prek install --prepare-hooks
+            '')
+
+            #: git hooks runner
+            pkgs.prek
+
+            pkgs.nixfmt
+            pkgs.statix
+            pkgs.deadnix
+          ];
+        };
+      });
     };
 }
