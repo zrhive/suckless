@@ -1,4 +1,3 @@
-default_install_hook_types: [pre-commit, pre-push]
 exclude: ^(suckless|flexipatch)/
 
 repos:
@@ -16,6 +15,6 @@ repos:
         name: Nix Treefmt
         description: Run formatters to worktree
         entry: nix fmt
-        language: system
-        files: \\.nix$
+        language: unsupported
+        files: \.nix$
         types: [file]
