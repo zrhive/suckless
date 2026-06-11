@@ -26,9 +26,21 @@ in
   #: DMENU
   suckless-dmenu = pkgs.dmenu.overrideAttrs { src = "${suckless}/dmenu"; };
   #: DWM
-  suckless-dwm = pkgs.dwm.overrideAttrs { src = "${suckless}/dwm"; };
+  suckless-dwm = (pkgs.dwm.overrideAttrs { src = "${suckless}/dwm"; }).override {
+    extraLibs = [
+      #: For xcursor patch
+      pkgs.libxcursor
+    ];
+  };
   #: SLSTATUS
-  suckless-slstatus = pkgs.slstatus.overrideAttrs { src = "${suckless}/slstatus"; };
+  suckless-slstatus = (pkgs.slstatus.overrideAttrs { src = "${suckless}/slstatus"; }).override {
+    extraLibs = [
+      #: For alpha patch
+      pkgs.libxrender
+      #: For themed cursor patch
+      pkgs.libxcursor
+    ];
+  };
   #: ST
   suckless-st = pkgs.st.overrideAttrs { src = "${suckless}/st"; };
 
