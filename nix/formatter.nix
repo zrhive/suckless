@@ -1,34 +1,19 @@
 {
   self,
+  lib,
+  bash,
   treefmt,
   nixfmt,
   deadnix,
   statix,
   formats,
-  writeShellScriptBin,
 }:
 
-let
-  statixFix = writeShellScriptBin "statix-fix" ''
-    for file in "$@"; do
-      ${statix}/bin/statix fix --config ${
-        (formats.toml { }).generate "statix.toml" {
-          disbaled = [
-            "manual_inherit_from"
-            "empty_pattern"
-            "redundant_pattern_bind"
-            "repeated_keys"
-          ];
-        }
-      } -- "$file"
-    done
-  '';
-in
 treefmt.withConfig {
   runtimeInputs = [
     nixfmt
     deadnix
-    statixFix
+    statix
   ];
 
   settings = {
@@ -51,8 +36,26 @@ treefmt.withConfig {
       };
 
       statix = {
-        command = "statix-fix";
+        command = "${lib.getExe bash}";
         includes = [ "*.nix" ];
+        options = [
+          "-euc"
+          ''
+            for file in "$@"; do
+              ${statix}/bin/statix fix --config ${
+                (formats.toml { }).generate "statix.toml" {
+                  disbaled = [
+                    "manual_inherit_from"
+                    "empty_pattern"
+                    "redundant_pattern_bind"
+                    "repeated_keys"
+                  ];
+                }
+              } "$file"
+            done
+          ''
+          "--"
+        ];
       };
     };
   };
