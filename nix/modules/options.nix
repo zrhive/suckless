@@ -1,67 +1,61 @@
 { config, lib, ... }:
 {
-  options.suckless =
-    let
-      inherit (lib) mkEnableOption mkOption types;
-    in
-    {
-      enable = mkEnableOption "Enable suckless modules.";
+  options.suckless = {
+    enable = lib.mkEnableOption "Enable suckless modules.";
 
-      tools = mkOption {
-        type = types.attrsOf (
-          types.submodule (
-            { name, ... }:
-            {
-              options = {
-                enable = mkEnableOption "Enable ${name}.";
+    tools = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = lib.mkEnableOption "Enable ${name}.";
 
-                package = mkOption {
-                  type = types.package;
-                  description = "Package to install.";
-                };
-
-                command = mkOption {
-                  type = types.lines;
-                  default = "";
-                  description = "Commands to execute for the tool.";
-                };
+              package = lib.mkOption {
+                type = lib.types.package;
+                description = "Package to install.";
               };
-            }
-          )
-        );
-        default = { };
-        description = "Suckless tools config.";
-      };
 
-      #: PLACEHOLDERS
-      packages = mkOption {
-        type = types.listOf types.package;
-        default = [ ];
-        description = "A placeholder to compile the packages.";
-      };
-
-      extraCommands = mkOption {
-        type = types.lines;
-        default = "";
-        description = "Extra commands during session initialization.";
-      };
+              command = lib.mkOption {
+                type = lib.types.lines;
+                default = "";
+                description = "Commands to execute for the tool.";
+              };
+            };
+          }
+        )
+      );
+      default = { };
+      description = "Suckless tools config.";
     };
 
-  config =
-    let
-      inherit (config.suckless) tools;
-    in
-    {
-      suckless = {
-        packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (lib.attrValues tools);
-
-        extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
-          lib.attrValues tools
-        );
-
-        tools.slstatus.command = lib.optionalString (
-          tools.slstatus.enable && tools.dwm.enable
-        ) "${lib.getExe tools.slstatus.package}";
-      };
+    #: PLACEHOLDERS
+    packages = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [ ];
+      description = "A placeholder to compile the packages.";
     };
+
+    extraCommands = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Extra commands during session initialization.";
+    };
+  };
+
+  config = lib.mkIf config.suckless.enable {
+    suckless = {
+      packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
+        lib.attrValues config.suckless.tools
+      );
+
+      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
+        lib.attrValues config.suckless.tools
+      );
+
+      tools.slstatus.command = lib.optionalString (
+        config.suckless.tools.slstatus.enable && config.suckless.tools.dwm.enable
+      ) "slstatus &";
+    };
+  };
 }
