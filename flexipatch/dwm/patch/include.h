@@ -9,7 +9,6 @@
 #include "bar_powerline_tags.h"
 #include "bar_status.h"
 #include "bar_statuscmd.h"
-#include "bar_tags.h"
 #include "bar_systray.h"
 
 /* Other patches */
