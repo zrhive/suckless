@@ -8,6 +8,7 @@
 static const unsigned int borderpx       = 0;   /* border pixel of windows */
 static const int corner_radius           = 10;
 static const unsigned int snap           = 32;  /* snap pixel */
+static const int swallowfloating         = 0;   /* 1 means swallow floating windows by default */
 static int nomodbuttons                  = 1;   /* allow client mouse button bindings that have no modifier */
 static const unsigned int gappih         = 20;  /* horiz inner gap between windows */
 static const unsigned int gappiv         = 10;  /* vert inner gap between windows */

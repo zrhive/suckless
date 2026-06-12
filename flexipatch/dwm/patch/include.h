@@ -31,6 +31,7 @@
 #include "placemouse.h"
 #include "rotatestack.h"
 #include "roundedcorners.h"
+#include "swallow.h"
 #include "tapresize.h"
 #include "togglefullscreen.h"
 #include "vanitygaps.h"

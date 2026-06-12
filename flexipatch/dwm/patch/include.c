@@ -31,6 +31,7 @@
 #include "placemouse.c"
 #include "rotatestack.c"
 #include "roundedcorners.c"
+#include "swallow.c"
 #include "tapresize.c"
 #include "togglefullscreen.c"
 #include "vanitygaps.c"

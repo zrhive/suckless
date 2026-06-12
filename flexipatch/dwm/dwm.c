@@ -203,8 +203,11 @@ struct Client {
 	int wasfloating;
 	int iscentered;
 	int beingmoved;
+	int isterminal, noswallow;
+	pid_t pid;
 	Client *next;
 	Client *snext;
+	Client *swallowing;
 	Monitor *mon;
 	Window win;
 };
@@ -267,6 +270,8 @@ typedef struct {
 	int iscentered;
 	int isfloating;
 	int isfakefullscreen;
+	int isterminal;
+	int noswallow;
 	const char *floatpos;
 	int monitor;
 } Rule;
@@ -278,8 +283,8 @@ typedef struct {
 #define CENTERED , .iscentered = 1
 #define PERMANENT
 #define FAKEFULLSCREEN , .isfakefullscreen = 1
-#define NOSWALLOW
-#define TERMINAL
+#define NOSWALLOW , .noswallow = 1
+#define TERMINAL , .isterminal = 1
 #define SWITCHTAG , .switchtag = 1
 
 /* function declarations */
@@ -444,6 +449,7 @@ applyrules(Client *c)
 	XClassHint ch = { NULL, NULL };
 
 	/* rule matching */
+	c->noswallow = -1;
 	c->isfloating = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
@@ -460,6 +466,8 @@ applyrules(Client *c)
 		{
 			c->iscentered = r->iscentered;
 			c->fakefullscreen = r->isfakefullscreen;
+			c->isterminal = r->isterminal;
+			c->noswallow = r->noswallow;
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -470,7 +478,10 @@ applyrules(Client *c)
 				setfloatpos(c, r->floatpos);
 			}
 
-			if (r->switchtag)
+			if (r->switchtag && (
+				c->noswallow > 0 ||
+				!termforwin(c) ||
+				!(c->isfloating && swallowfloating && c->noswallow < 0)))
 			{
 				unfocus(selmon->sel, 1, NULL);
 				selmon = c->mon;
@@ -992,6 +1003,8 @@ destroynotify(XEvent *e)
 
 	if ((c = wintoclient(ev->window)))
 		unmanage(c, 1);
+	else if ((c = swallowingclient(ev->window)))
+		unmanage(c->swallowing, 1);
 	else if (showsystray && (c = wintosystrayicon(ev->window))) {
 		removesystrayicon(c);
 		drawbarwin(systray->bar);
@@ -1505,11 +1518,13 @@ void
 manage(Window w, XWindowAttributes *wa)
 {
 	Client *c, *t = NULL;
+	Client *term = NULL;
 	Window trans = None;
 	XWindowChanges wc;
 
 	c = ecalloc(1, sizeof(Client));
 	c->win = w;
+	c->pid = winpid(w);
 	/* geometry */
 	c->sfx = c->sfy = c->sfw = c->sfh = -9999;
 	c->x = c->oldx = wa->x;
@@ -1532,6 +1547,9 @@ manage(Window w, XWindowAttributes *wa)
 			c->iscentered = 1;
 		c->bw = borderpx;
 		applyrules(c);
+		term = termforwin(c);
+		if (term)
+			c->mon = term->mon;
 	}
 
 	if (c->x + WIDTH(c) > c->mon->wx + c->mon->ww)
@@ -1584,8 +1602,10 @@ manage(Window w, XWindowAttributes *wa)
 	if (c->mon == selmon)
 		unfocus(selmon->sel, 0, c);
 	c->mon->sel = c;
-	arrange(c->mon);
-	XMapWindow(dpy, c->win);
+	if (!(term && swallow(term, c))) {
+		arrange(c->mon);
+		XMapWindow(dpy, c->win);
+	}
 	focus(NULL);
 
 }
@@ -1990,6 +2010,8 @@ run(void)
 void
 scan(void)
 {
+	scanner = 1;
+	char swin[256];
 	unsigned int i, num;
 	Window d1, d2, *wins = NULL;
 	XWindowAttributes wa;
@@ -2001,6 +2023,8 @@ scan(void)
 				continue;
 			if (wa.map_state == IsViewable || getstate(wins[i]) == IconicState)
 				manage(wins[i], &wa);
+			else if (gettextprop(wins[i], netatom[NetClientList], swin, sizeof swin))
+				manage(wins[i], &wa);
 		}
 		for (i = 0; i < num; i++) { /* now the transients */
 			if (!XGetWindowAttributes(dpy, wins[i], &wa))
@@ -2011,6 +2035,7 @@ scan(void)
 		}
 		XFree(wins);
 	}
+	scanner = 0;
 }
 
 void
@@ -2533,6 +2558,20 @@ unmanage(Client *c, int destroyed)
 
 	m = c->mon;
 
+	if (c->swallowing) {
+		unswallow(c);
+		return;
+	}
+
+	Client *s = swallowingclient(c->win);
+	if (s) {
+		free(s->swallowing);
+		s->swallowing = NULL;
+		arrange(m);
+		focus(NULL);
+		return;
+	}
+
 	detach(c);
 	detachstack(c);
 	if (!destroyed) {
@@ -2550,6 +2589,8 @@ unmanage(Client *c, int destroyed)
 	}
 
 	free(c);
+	if (s)
+		return;
 	arrange(m);
 	focus(NULL);
 	updateclientlist();
@@ -2958,11 +2999,13 @@ main(int argc, char *argv[])
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
+	if (!(xcon = XGetXCBConnection(dpy)))
+		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
 	autostart_exec();
 	setup();
 #ifdef __OpenBSD__
-	if (pledge("stdio rpath proc exec", NULL) == -1)
+	if (pledge("stdio rpath proc exec ps", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
