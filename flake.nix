@@ -54,14 +54,6 @@
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShellNoCC {
           packages = [
-            #: accessible via: `$ hooks-install`
-            (pkgs.writeShellScriptBin "hooks-install" ''
-              prek install --prepare-hooks
-            '')
-
-            #: git hooks runner
-            pkgs.prek
-
             pkgs.nixfmt
             pkgs.statix
             pkgs.deadnix
