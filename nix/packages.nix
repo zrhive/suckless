@@ -32,8 +32,8 @@ in
       pkgs.libxcursor
     ];
   };
-  #: SLSTATUS
-  suckless-slstatus = (pkgs.slstatus.overrideAttrs { src = "${suckless}/slstatus"; }).override {
+  #: ST
+  suckless-st = (pkgs.st.overrideAttrs { src = "${suckless}/st"; }).override {
     extraLibs = [
       #: For alpha patch
       pkgs.libxrender
@@ -41,8 +41,8 @@ in
       pkgs.libxcursor
     ];
   };
-  #: ST
-  suckless-st = pkgs.st.overrideAttrs { src = "${suckless}/st"; };
+  #: SLSTATUS
+  suckless-slstatus = pkgs.slstatus.overrideAttrs { src = "${suckless}/slstatus"; };
 
   /**
     FLEXIPATCH
