@@ -66,8 +66,8 @@ in
     patches = [
       #: xcursor patch is not included in flexipatch, solve by adding the patch here
       (pkgs.fetchpatch {
-        url = "https://raw.githubusercontent.com/zrhive/suckless/refs/heads/xcursor-patch/nix/dwm-xcursor-20260601.patch";
-        hash = "sha256-InxLPMplHw6maqlqBlSArjX2d2efCaMru0c06nn4Vy4=";
+        url = "https://gitlab.com/zrhive/suckless/-/raw/xcursor-patch/patches/xcursor.patch";
+        hash = "sha256-wlQ3546IMCCcf2NNR7R1bORNR6F0nxAmOwngytDDJVQ=";
       })
     ];
   };
