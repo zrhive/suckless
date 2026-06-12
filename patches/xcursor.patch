@@ -1,6 +1,6 @@
 diff -ru flexipatch/dwm/config.mk patches/dwm/config.mk
 --- a/config.mk	2026-06-13 00:49:29.282020120 +0800
-+++ b/config.mk	2026-06-13 01:31:20.246346828 +0800
++++ b/config.mk	2026-06-13 05:11:07.428179324 +0800
 @@ -48,6 +48,9 @@
  # Uncomment this for the swallow patch / SWALLOW_PATCH
  XCBLIBS = -lX11-xcb -lxcb -lxcb-res
@@ -22,7 +22,7 @@ diff -ru flexipatch/dwm/config.mk patches/dwm/config.mk
  CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700L -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
 diff -ru flexipatch/dwm/drw.c patches/dwm/drw.c
 --- a/drw.c	2026-06-13 00:49:29.926604845 +0800
-+++ b/drw.c	2026-06-13 01:28:25.240846186 +0800
++++ b/drw.c	2026-06-13 05:11:07.428179324 +0800
 @@ -4,6 +4,7 @@
  #include <string.h>
  #include <X11/Xlib.h>
@@ -50,7 +50,7 @@ diff -ru flexipatch/dwm/drw.c patches/dwm/drw.c
  }
 diff -ru flexipatch/dwm/drw.h patches/dwm/drw.h
 --- a/drw.h	2026-06-13 00:49:29.926604845 +0800
-+++ b/drw.h	2026-06-13 01:28:25.241206207 +0800
++++ b/drw.h	2026-06-13 05:11:07.429179276 +0800
 @@ -55,7 +55,7 @@
  );
  
@@ -62,7 +62,7 @@ diff -ru flexipatch/dwm/drw.h patches/dwm/drw.h
  /* Drawing context manipulation */
 diff -ru flexipatch/dwm/dwm.c patches/dwm/dwm.c
 --- a/dwm.c	2026-06-13 04:38:29.855813943 +0800
-+++ b/dwm.c	2026-06-13 01:34:31.122842646 +0800
++++ b/dwm.c	2026-06-13 05:19:20.943038041 +0800
 @@ -30,7 +30,6 @@
  #include <unistd.h>
  #include <sys/types.h>
@@ -88,7 +88,7 @@ diff -ru flexipatch/dwm/dwm.c patches/dwm/dwm.c
  	if (m->showbar)
  		for (bar = m->bar; bar; bar = bar->next)
  			drawbarwin(bar);
-@@ -2289,14 +2289,16 @@
+@@ -2289,14 +2289,14 @@
  	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
  	motifatom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
  	/* init cursors */
@@ -106,9 +106,7 @@ diff -ru flexipatch/dwm/dwm.c patches/dwm/dwm.c
 +	cursor[CurResizeBL] = drw_cur_create(drw, "bottom_left_corner");
 +	cursor[CurResizeTR] = drw_cur_create(drw, "top_right_corner");
 +	cursor[CurResizeTL] = drw_cur_create(drw, "top_left_corner");
-+	cursor[CurResizeHorzArrow] = drw_cur_create(drw, "sb_h_double_arrow");
-+	cursor[CurResizeVertArrow] = drw_cur_create(drw, "sb_v_double_arrow");
-+	cursor[CurIronCross] = drw_cur_create(drw, "cross");
++	cursor[CurDragFact] = drw_cur_create(drw, "x-cursor");
 +	cursor[CurMove]   = drw_cur_create(drw, "fleur");
  	/* init appearance */
  	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));

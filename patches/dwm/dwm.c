@@ -2295,9 +2295,7 @@ setup(void)
 	cursor[CurResizeBL] = drw_cur_create(drw, "bottom_left_corner");
 	cursor[CurResizeTR] = drw_cur_create(drw, "top_right_corner");
 	cursor[CurResizeTL] = drw_cur_create(drw, "top_left_corner");
-	cursor[CurResizeHorzArrow] = drw_cur_create(drw, "sb_h_double_arrow");
-	cursor[CurResizeVertArrow] = drw_cur_create(drw, "sb_v_double_arrow");
-	cursor[CurIronCross] = drw_cur_create(drw, "cross");
+	cursor[CurDragFact] = drw_cur_create(drw, "x-cursor");
 	cursor[CurMove]   = drw_cur_create(drw, "fleur");
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
