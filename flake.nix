@@ -53,7 +53,9 @@
 
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShellNoCC {
-          packages = self.formatter.${pkgs.stdenv.hostPlatform.system}.runtimeInputs;
+          packages = self.formatter.${pkgs.stdenv.hostPlatform.system}.runtimeInputs ++ [
+            pkgs.nixd
+          ];
         };
       });
     };
