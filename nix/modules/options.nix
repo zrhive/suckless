@@ -43,15 +43,15 @@
     };
   };
 
-  config = lib.mkIf config.suckless.enable {
-    suckless = {
-      packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
-        lib.attrValues config.suckless.tools
-      );
+  # config = lib.mkIf config.suckless.enable {
+  #   suckless = {
+  #     packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
+  #       lib.attrValues config.suckless.tools
+  #     );
 
-      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
-        lib.attrValues config.suckless.tools
-      );
-    };
-  };
+  #     extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
+  #       lib.attrValues config.suckless.tools
+  #     );
+  #   };
+  # };
 }
