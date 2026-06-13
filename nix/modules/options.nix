@@ -49,9 +49,21 @@
   #       lib.attrValues config.suckless.tools
   #     );
 
+<<<<<<< HEAD
   #     extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
   #       lib.attrValues config.suckless.tools
   #     );
   #   };
   # };
+=======
+      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
+        lib.attrValues config.suckless.tools
+      );
+
+      tools.slstatus.command = lib.optionalString (
+        config.suckless.tools.slstatus.enable && config.suckless.tools.dwm.enable
+      ) "slstatus &";
+    };
+  };
+>>>>>>> parent of d46b178 (Move out command option from defining option block)
 }
