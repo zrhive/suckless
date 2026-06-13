@@ -3,14 +3,8 @@ width_pwrl_tags(Bar *bar, BarArg *a)
 {
 	int w, i;
 	int plw = drw->fonts->h / 2 + 1;
-	Client *c;
-	unsigned int occ = 0;
-	for (c = bar->mon->clients; c; c = c->next)
-		occ |= c->tags == 255 ? 0 : c->tags;
 
 	for (w = 0, i = 0; i < NUMTAGS; i++) {
-		if (!(occ & 1 << i || bar->mon->tagset[bar->mon->seltags] & 1 << i))
-			continue;
 		w += TEXTW(tagicon(bar->mon, i)) + plw;
 	}
 	return w + lrpad;
@@ -28,16 +22,13 @@ draw_pwrl_tags(Bar *bar, BarArg *a)
 	Clr *prevscheme, *nxtscheme;
 
 	for (c = bar->mon->clients; c; c = c->next) {
-		occ |= c->tags == 255 ? 0 : c->tags;
+		occ |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
 	}
 	x = a->x;
 	prevscheme = scheme[SchemeNorm];
 	for (i = 0; i < NUMTAGS; i++) {
-		/* do not draw vacant tags */
-		if (!(occ & 1 << i || bar->mon->tagset[bar->mon->seltags] & 1 << i))
-			continue;
 
 		icon = tagicon(bar->mon, i);
 		invert = 0;
@@ -67,14 +58,8 @@ click_pwrl_tags(Bar *bar, Arg *arg, BarArg *a)
 {
 	int i = 0, x = lrpad / 2;
 	int plw = drw->fonts->h / 2 + 1;
-	Client *c;
-	unsigned int occ = 0;
-	for (c = bar->mon->clients; c; c = c->next)
-		occ |= c->tags == 255 ? 0 : c->tags;
 
 	do {
-		if (!(occ & 1 << i || bar->mon->tagset[bar->mon->seltags] & 1 << i))
-			continue;
 		x += TEXTW(tagicon(bar->mon, i)) + plw;
 	} while (a->x >= x && ++i < NUMTAGS);
 	if (i < NUMTAGS) {

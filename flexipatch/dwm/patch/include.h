@@ -26,7 +26,6 @@
 #include "focusmaster.h"
 #include "fullscreen.h"
 #include "movestack.h"
-#include "nomodbuttons.h"
 #include "placedir.h"
 #include "placemouse.h"
 #include "rotatestack.h"
@@ -36,9 +35,5 @@
 #include "togglefullscreen.h"
 #include "vanitygaps.h"
 /* Layouts */
-#include "layout_bstack.h"
-#include "layout_deck.h"
 #include "layout_flextile-deluxe.h"
-#include "layout_monocle.h"
-#include "layout_tile.h"
 

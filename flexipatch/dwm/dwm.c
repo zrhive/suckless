@@ -596,9 +596,6 @@ arrange(Monitor *m)
 void
 arrangemon(Monitor *m)
 {
-	updatebarpos(selmon);
-	for (Bar *bar = selmon->bar; bar; bar = bar->next)
-		XMoveResizeWindow(dpy, bar->win, bar->bx, bar->by, bar->bw, bar->bh);
 	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
 	if (m->lt[m->sellt]->arrange)
 		m->lt[m->sellt]->arrange(m);
@@ -1422,7 +1419,6 @@ grabbuttons(Client *c, int focused)
 				BUTTONMASK, GrabModeSync, GrabModeSync, None, None);
 		for (i = 0; i < LENGTH(buttons); i++)
 			if (buttons[i].click == ClkClientWin
-				&& (nomodbuttons || buttons[i].mask != 0)
 			)
 				for (j = 0; j < LENGTH(modifiers); j++)
 					XGrabButton(dpy, buttons[i].button,
@@ -1745,12 +1741,6 @@ int
 noborder(Client *c)
 {
 	int monocle_layout = 0;
-
-	if (&monocle == c->mon->lt[c->mon->sellt]->arrange)
-		monocle_layout = 1;
-
-	if (&deck == c->mon->lt[c->mon->sellt]->arrange && c->mon->nmaster == 0)
-		monocle_layout = 1;
 
 	if (&flextile == c->mon->lt[c->mon->sellt]->arrange && (
 		(c->mon->ltaxis[LAYOUT] == NO_SPLIT && c->mon->ltaxis[MASTER] == MONOCLE) ||
@@ -2658,15 +2648,6 @@ updatebarpos(Monitor *m)
 	Bar *bar;
 	int y_pad = 0;
 	int x_pad = 0;
-	if (enablegaps)
-	{
-		unsigned int n; Client *c;
-		for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-		if (n > 1) {
-			y_pad = gappoh;
-			x_pad = gappov;
-		}
-	}
 
 	for (bar = m->bar; bar; bar = bar->next) {
 		bar->bx = m->wx + x_pad;

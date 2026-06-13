@@ -15,8 +15,6 @@ dragfact(const Arg *arg)
 	if (!(c = m->sel) || !n || !m->lt[m->sellt]->arrange)
 		return;
 
-	else if (m->lt[m->sellt]->arrange == &bstack)
-		horizontal = 1;
 	else if (m->lt[m->sellt]->arrange == &flextile) {
 		switch (m->ltaxis[LAYOUT]) {
 		case SPLIT_HORIZONTAL:

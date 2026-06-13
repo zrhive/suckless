@@ -9,7 +9,6 @@ static const unsigned int borderpx       = 2;   /* border pixel of windows */
 static const int corner_radius           = 10;
 static const unsigned int snap           = 16;  /* snap pixel */
 static const int swallowfloating         = 1;   /* 1 means swallow floating windows by default */
-static int nomodbuttons                  = 1;   /* allow client mouse button bindings that have no modifier */
 static const unsigned int gappih         = 20;  /* horiz inner gap between windows */
 static const unsigned int gappiv         = 20;  /* vert inner gap between windows */
 static const unsigned int gappoh         = 20;  /* horiz outer gap between windows and screen edge */
@@ -18,8 +17,6 @@ static const int smartgaps_fact          = 1;   /* gap factor when there is only
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
 static const int bar_height              = 1;   /* 0 means derive from font, >= 1 explicit height */
-static const int vertpad                 = 10;  /* vertical padding of bar */
-static const int sidepad                 = 10;  /* horizontal padding of bar */
 static int floatposgrid_x                = 5;   /* float grid columns */
 static int floatposgrid_y                = 5;   /* float grid rows */
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
@@ -37,10 +34,10 @@ static const char *fonts[]               = { "JetBrainsMono Nerd Font:size=12" }
 
 static char c000000[]                    = "#000000"; // placeholder value
 
-static char normfgcolor[]                = "#bbbbbb";
-static char normbgcolor[]                = "#222222";
-static char normbordercolor[]            = "#444444";
-static char normfloatcolor[]             = "#db8fd9";
+static char normfgcolor[]                = "#cad3f5";
+static char normbgcolor[]                = "#24273a";
+static char normbordercolor[]            = "#c6a0f6";
+static char normfloatcolor[]             = "#b7bdf8";
 
 static char selfgcolor[]                 = "#eeeeee";
 static char selbgcolor[]                 = "#005577";
@@ -247,10 +244,6 @@ static const Layout layouts[] = {
 	{ "[\\]",     flextile,         { -1, -1, NO_SPLIT, DWINDLE, DWINDLE, 0, NULL } }, // fibonacci dwindle
 	{ "(@)",      flextile,         { -1, -1, NO_SPLIT, SPIRAL, SPIRAL, 0, NULL } }, // fibonacci spiral
 	{ "[T]",      flextile,         { -1, -1, SPLIT_VERTICAL, LEFT_TO_RIGHT, TATAMI, 0, NULL } }, // tatami mats
-	{ "[]=",      tile,             {0} },
-	{ "[M]",      monocle,          {0} },
-	{ "TTT",      bstack,           {0} },
-	{ "[D]",      deck,             {0} },
 };
 
 /* key definitions */
@@ -348,7 +341,6 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_Return,     mirrorlayout,           {0} },          /* flextile, flip master and stack areas */
 	{ MODKEY,                       XK_space,      setlayout,              {0} },
 	{ MODKEY|ShiftMask,             XK_space,      togglefloating,         {0} },
-	{ MODKEY|ShiftMask,             XK_Escape,     togglenomodbuttons,     {0} },
 	{ MODKEY,                       XK_y,          togglefullscreen,       {0} },
 	{ MODKEY|ShiftMask,             XK_y,          togglefakefullscreen,   {0} },
 	{ MODKEY|ShiftMask,             XK_f,          fullscreen,             {0} },
