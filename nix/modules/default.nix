@@ -7,21 +7,9 @@ let
 in
 {
   suckless.tools = {
-
-    #: DMENU
     dmenu.package = mkDefault packages.dmenu;
-
-    #: DWM
     dwm.package = mkDefault packages.dwm;
-
-    #: ST
     st.package = mkDefault packages.st;
-
-    #: SLSTATUS
-    slstatus = {
-      package = mkDefault packages.slstatus;
-      command = mkDefault "slstatus &";
-    };
-
+    slstatus.package = mkDefault packages.slstatus;
   };
 }
