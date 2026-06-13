@@ -52,10 +52,6 @@
       extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
         lib.attrValues config.suckless.tools
       );
-
-      tools.slstatus.command = lib.optionalString (
-        config.suckless.tools.slstatus.enable && config.suckless.tools.dwm.enable
-      ) "slstatus &";
     };
   };
 }
