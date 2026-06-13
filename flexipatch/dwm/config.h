@@ -5,23 +5,23 @@
 #define CMD(...)   { .v = (const char*[]){ __VA_ARGS__, NULL } }
 
 /* appearance */
-static const unsigned int borderpx       = 0;   /* border pixel of windows */
+static const unsigned int borderpx       = 2;   /* border pixel of windows */
 static const int corner_radius           = 10;
-static const unsigned int snap           = 32;  /* snap pixel */
-static const int swallowfloating         = 0;   /* 1 means swallow floating windows by default */
+static const unsigned int snap           = 16;  /* snap pixel */
+static const int swallowfloating         = 1;   /* 1 means swallow floating windows by default */
 static int nomodbuttons                  = 1;   /* allow client mouse button bindings that have no modifier */
 static const unsigned int gappih         = 20;  /* horiz inner gap between windows */
-static const unsigned int gappiv         = 10;  /* vert inner gap between windows */
-static const unsigned int gappoh         = 10;  /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov         = 30;  /* vert outer gap between windows and screen edge */
+static const unsigned int gappiv         = 20;  /* vert inner gap between windows */
+static const unsigned int gappoh         = 20;  /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov         = 20;  /* vert outer gap between windows and screen edge */
 static const int smartgaps_fact          = 1;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
-static const int bar_height              = 0;   /* 0 means derive from font, >= 1 explicit height */
+static const int bar_height              = 1;   /* 0 means derive from font, >= 1 explicit height */
 static const int vertpad                 = 10;  /* vertical padding of bar */
 static const int sidepad                 = 10;  /* horizontal padding of bar */
-static int floatposgrid_x                = 5;  /* float grid columns */
-static int floatposgrid_y                = 5;  /* float grid rows */
+static int floatposgrid_x                = 5;   /* float grid columns */
+static int floatposgrid_y                = 5;   /* float grid rows */
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = 'A';
 static const unsigned int systrayspacing = 2;   /* systray spacing */
@@ -33,8 +33,7 @@ static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 static int fakefsindicatortype           = INDICATOR_PLUS;
 static int floatfakefsindicatortype      = INDICATOR_PLUS_AND_LARGER_SQUARE;
-static const char *fonts[]               = { "monospace:size=10" };
-static const char dmenufont[]            = "monospace:size=10";
+static const char *fonts[]               = { "JetBrainsMono Nerd Font:size=12" };
 
 static char c000000[]                    = "#000000"; // placeholder value
 
@@ -120,7 +119,7 @@ static char *statuscolors[][ColCount] = {
 };
 
 static const char *const autostart[] = {
-	"st", NULL,
+	"kitty", NULL,
 	NULL /* terminate */
 };
 
@@ -212,24 +211,24 @@ static const BarRule barrules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int nstack      = 0;    /* number of clients in primary stack area */
-static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
-static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
-static const int refreshrate_placemouse = 60; /* refresh rate (per second) for placemouse */
-static const int decorhints  = 1;    /* 1 means respect decoration hints */
+static const float mfact                = 0.60; /* factor of master area size [0.05..0.95] */
+static const int nmaster                = 1;    /* number of clients in master area */
+static const int nstack                 = 0;    /* number of clients in primary stack area */
+static const int resizehints            = 0;    /* 1 means respect size hints in tiled resizals */
+static const int lockfullscreen         = 1;    /* 1 will force focus on the fullscreen window */
+static const int refreshrate            = 120;  /* refresh rate (per second) for client move/resize */
+static const int refreshrate_placemouse = 60;   /* refresh rate (per second) for placemouse */
+static const int decorhints             = 1;    /* 1 means respect decoration hints */
 
 /* mouse scroll resize */
 static const int scrollsensetivity = 30; /* 1 means resize window by 1 pixel for each scroll event */
 /* resizemousescroll direction argument list */
 static const int scrollargs[][2] = {
 	/* width change         height change */
-	{ +scrollsensetivity,	0 },
-	{ -scrollsensetivity,	0 },
-	{ 0, 				  	+scrollsensetivity },
-	{ 0, 					-scrollsensetivity },
+	{ +scrollsensetivity,	  0 },
+	{ -scrollsensetivity,	  0 },
+	{ 0,                    +scrollsensetivity },
+	{ 0,                    -scrollsensetivity },
 };
 
 static const Layout layouts[] = {
@@ -255,7 +254,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -264,17 +263,17 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = {
-	"dmenu_run",
-	"-m", dmenumon,
-	"-fn", dmenufont,
-	"-nb", normbgcolor,
-	"-nf", normfgcolor,
-	"-sb", selbgcolor,
-	"-sf", selfgcolor,
-	NULL
-};
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, NULL };
 static const char *termcmd[]  = { "st", NULL };
+/***** PROGRAMS ***************/
+static const char *kittycmd[]   = { "kitty", NULL };
+static const char *roficombi[]  = { "rofi", "-show", "combi", NULL };
+static const char *rofidrun[]   = { "rofi", "-show", "drun", NULL };
+static const char *rofipower[]  = { "rofi", "-show", "power-menu", "-modi", "power-menu:rofi-power-menu", NULL };
+static const char *yazifile[]   = { "kitty", "-e", "yazi", NULL };
+static const char *nvimstart[]  = { "kitty", "nvim", NULL };
+static const char *flamegui[]   = { "flameshot", "gui", NULL };
+static const char *flamescreen[] = { "flameshot", "screen", NULL };
 
 /* commands spawned when clicking statusbar, the mouse button pressed is exported as BUTTON */
 static const StatusCmd statuscmds[] = {
@@ -287,8 +286,8 @@ static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
-	{ MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } },
+	{ MODKEY,                       XK_n,          spawn,                  {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_n,         spawn,                  {.v = termcmd } },
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
 	{ MODKEY|ControlMask,           XK_space,      focusmaster,            {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
@@ -314,7 +313,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_o,          setcfact,               {0} },
 	{ MODKEY|ShiftMask,             XK_j,          movestack,              {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,          movestack,              {.i = -1 } },
-	{ MODKEY,                       XK_Return,     zoom,                   {0} },
+	{ MODKEY,                       XK_o,           zoom,                   {0} },
 	{ MODKEY|Mod4Mask,              XK_u,          incrgaps,               {.i = +1 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_u,          incrgaps,               {.i = -1 } },
 	{ MODKEY|Mod4Mask,              XK_i,          incrigaps,              {.i = +1 } },
@@ -435,6 +434,15 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                                  6)
 	TAGKEYS(                        XK_8,                                  7)
 	TAGKEYS(                        XK_9,                                  8)
+  /******* PROGRAMS AND SERVICES ***************************************/
+  { MODKEY|ShiftMask,   XK_Return,    spawn,    {.v = kittycmd  } },
+  { MODKEY,             XK_r,         spawn,    {.v = roficombi } },
+  { MODKEY,             XK_e,         spawn,    {.v = rofidrun  } },
+  { MODKEY,             XK_Delete,     spawn,    {.v = rofipower } },
+  { MODKEY,             XK_Return,    spawn,    {.v = yazifile  } },
+  { MODKEY,             XK_v,         spawn,    {.v = nvimstart } },
+  { MODKEY,             XK_Print,     spawn,    {.v = flamescreen } },
+  { MODKEY|METAKEY,     XK_Print,     spawn,    {.v = flamegui  } },
 };
 
 /* button definitions */
