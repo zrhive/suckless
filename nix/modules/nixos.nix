@@ -1,21 +1,8 @@
 { config, lib, ... }:
 
 let
-  inherit (config.suckless) tools;
-  inherit (lib)
-    mkDefault
-    attrValues
-    concatMap
-    concatMapStringsSep
-    optional
-    optionalString
-    ;
-
-  packages = concatMap (tool: optional tool.enable tool.package) (attrValues tools);
-
-  extraCommands = concatMapStringsSep "\n" (tool: optionalString tool.enable tool.command) (
-    attrValues tools
-  );
+  inherit (lib) mkDefault;
+  inherit (config.suckless) tools packages extraCommands;
 in
 {
   imports = [ ./options.nix ];

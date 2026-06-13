@@ -43,27 +43,15 @@
     };
   };
 
-  # config = lib.mkIf config.suckless.enable {
-  #   suckless = {
-  #     packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
-  #       lib.attrValues config.suckless.tools
-  #     );
-
-<<<<<<< HEAD
-  #     extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
-  #       lib.attrValues config.suckless.tools
-  #     );
-  #   };
-  # };
-=======
-      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
+  config = lib.mkIf config.suckless.enable {
+    suckless = {
+      packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
         lib.attrValues config.suckless.tools
       );
 
-      tools.slstatus.command = lib.optionalString (
-        config.suckless.tools.slstatus.enable && config.suckless.tools.dwm.enable
-      ) "slstatus &";
+      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
+        lib.attrValues config.suckless.tools
+      );
     };
   };
->>>>>>> parent of d46b178 (Move out command option from defining option block)
 }
