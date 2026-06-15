@@ -5,10 +5,9 @@
 
 #include "bar_alpha.h"
 #include "bar_ltsymbol.h"
-#include "bar_powerline_status.h"
-#include "bar_powerline_tags.h"
 #include "bar_status.h"
 #include "bar_statuscmd.h"
+#include "bar_tags.h"
 #include "bar_systray.h"
 
 /* Other patches */
@@ -19,13 +18,13 @@
 #include "cyclelayouts.h"
 #include "decorationhints.h"
 #include "dragfact.h"
-#include "exresize.h"
 #include "fakefullscreenclient.h"
-#include "floatpos.h"
 #include "focusdir.h"
 #include "focusmaster.h"
 #include "fullscreen.h"
+#include "keymodes.h"
 #include "movestack.h"
+#include "pertag.h"
 #include "placedir.h"
 #include "placemouse.h"
 #include "rotatestack.h"

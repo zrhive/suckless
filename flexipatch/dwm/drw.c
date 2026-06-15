@@ -10,8 +10,6 @@
 
 #define UTF_INVALID 0xFFFD
 
-Clr transcheme[3];
-
 static int
 utf8decode(const char *s_in, long *u, int *err)
 {
@@ -225,15 +223,6 @@ drw_setscheme(Drw *drw, Clr *scm)
 }
 
 void
-drw_settrans(Drw *drw, Clr *psc, Clr *nsc)
-{
-	if (drw) {
-		transcheme[0] = psc[ColBg]; transcheme[1] = nsc[ColBg]; transcheme[2] = psc[ColBorder];
-		drw->scheme = transcheme;
-	}
-}
-
-void
 drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert)
 {
 	if (!drw || !drw->scheme)
@@ -402,37 +391,6 @@ no_match:
 		XftDrawDestroy(d);
 
 	return x + (render ? w : 0);
-}
-
-void
-drw_arrow(Drw *drw, int x, int y, unsigned int w, unsigned int h, int direction, int slash)
-{
-	if (!drw || !drw->scheme)
-		return;
-
-	/* direction=1 draws right arrow */
-	x = direction ? x : x + w;
-	w = direction ? w : -w;
-	/* slash=1 draws slash instead of arrow */
-	unsigned int hh = slash ? (direction ? 0 : h) : h/2;
-
-	XPoint points[] = {
-		{x    , y      },
-		{x + w, y + hh },
-		{x    , y + h  },
-	};
-
-	XPoint bg[] = {
-		{x    , y    },
-		{x + w, y    },
-		{x + w, y + h},
-		{x    , y + h},
-	};
-
-	XSetForeground(drw->dpy, drw->gc, drw->scheme[ColBg].pixel);
-	XFillPolygon(drw->dpy, drw->drawable, drw->gc, bg, 4, Convex, CoordModeOrigin);
-	XSetForeground(drw->dpy, drw->gc, drw->scheme[ColFg].pixel);
-	XFillPolygon(drw->dpy, drw->drawable, drw->gc, points, 3, Nonconvex, CoordModeOrigin);
 }
 
 void

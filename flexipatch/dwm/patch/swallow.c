@@ -13,7 +13,6 @@ swallow(Client *p, Client *c)
 {
 	Client *s;
 	XWindowChanges wc;
-	int border_padding = 0;
 
 	if (c->noswallow > 0 || c->isterminal)
 		return 0;
@@ -42,13 +41,8 @@ swallow(Client *p, Client *c)
 	s = scanner ? c : p;
 
 	wc.border_width = p->bw;
-	if (noborder(p)) {
-		wc.border_width = 0;
-		border_padding = p->bw * 2;
-	}
-
 	XConfigureWindow(dpy, p->win, CWBorderWidth, &wc);
-	XMoveResizeWindow(dpy, p->win, s->x, s->y, s->w + border_padding, s->h + border_padding);
+	XMoveResizeWindow(dpy, p->win, s->x, s->y, s->w, s->h);
 
 	XSetWindowBorder(dpy, p->win, scheme[SchemeNorm][ColBorder].pixel);
 
@@ -64,7 +58,6 @@ unswallow(Client *c)
 {
 	XWindowChanges wc;
 	c->win = c->swallowing->win;
-	int border_padding = 0;
 
 	free(c->swallowing);
 	c->swallowing = NULL;
@@ -78,13 +71,8 @@ unswallow(Client *c)
 	XMapWindow(dpy, c->win);
 
 	wc.border_width = c->bw;
-	if (noborder(c)) {
-		wc.border_width = 0;
-		border_padding = c->bw * 2;
-	}
-
 	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc);
-	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w + border_padding, c->h + border_padding);
+	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 	XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
 
 	setclientstate(c, NormalState);
