@@ -15,12 +15,6 @@
                 type = lib.types.package;
                 description = "Package to install.";
               };
-
-              command = lib.mkOption {
-                type = lib.types.lines;
-                default = "";
-                description = "Commands to execute for the tool.";
-              };
             };
           }
         )
@@ -29,29 +23,17 @@
       description = "Suckless tools config.";
     };
 
-    #: PLACEHOLDERS
+    #: PLACEHOLDER
     packages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
       description = "A placeholder to compile the packages.";
     };
-
-    extraCommands = lib.mkOption {
-      type = lib.types.lines;
-      default = "";
-      description = "Extra commands during session initialization.";
-    };
   };
 
   config = lib.mkIf config.suckless.enable {
-    suckless = {
-      packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
-        lib.attrValues config.suckless.tools
-      );
-
-      extraCommands = lib.concatMapStringsSep "\n" (tool: lib.optionalString tool.enable tool.command) (
-        lib.attrValues config.suckless.tools
-      );
-    };
+    suckless.packages = lib.concatMap (tool: lib.optional tool.enable tool.package) (
+      lib.attrValues config.suckless.tools
+    );
   };
 }

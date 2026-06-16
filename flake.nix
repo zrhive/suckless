@@ -38,7 +38,7 @@
       };
 
       overlays.default =
-        final: _:
+        final: _prev:
         let
           packages = final: self.packages.${final.stdenv.hostPlatform.system};
         in
@@ -49,12 +49,13 @@
           slstatus = (packages final).suckless-slstatus;
         };
 
-      formatter = eachSystem (pkgs: pkgs.callPackage ./nix/formatter.nix { inherit self; });
-
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShellNoCC {
-          packages = self.formatter.${pkgs.stdenv.hostPlatform.system}.runtimeInputs ++ [
+          packages = [
             pkgs.nixd
+            pkgs.nixfmt
+            pkgs.statix
+            pkgs.deadnix
           ];
         };
       });
