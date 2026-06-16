@@ -202,17 +202,6 @@ static const int refreshrate = 120;  /* refresh rate (per second) for client mov
 static const int refreshrate_placemouse = 60; /* refresh rate (per second) for placemouse */
 static const int decorhints  = 1;    /* 1 means respect decoration hints */
 
-/* mouse scroll resize */
-static const int scrollsensetivity = 30; /* 1 means resize window by 1 pixel for each scroll event */
-/* resizemousescroll direction argument list */
-static const int scrollargs[][2] = {
-	/* width change         height change */
-	{ +scrollsensetivity,	0 },
-	{ -scrollsensetivity,	0 },
-	{ 0, 				  	+scrollsensetivity },
-	{ 0, 					-scrollsensetivity },
-};
-
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
@@ -255,7 +244,6 @@ static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
-	{ MODKEY,                       XK_Escape,     setkeymode,             {.ui = COMMANDMODE} },
 	{ MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } },
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
@@ -332,30 +320,6 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_9,                                  8)
 };
 
-static const Key cmdkeys[] = {
-	/* modifier                    keys                     function         argument */
-	{ 0,                           XK_Escape,               clearcmd,        {0} },
-	{ ControlMask,                 XK_c,                    clearcmd,        {0} },
-	{ 0,                           XK_i,                    setkeymode,      {.ui = INSERTMODE} },
-};
-
-static const Command commands[] = {
-	/* modifier (4 keys)                          keysyms (4 keys)                                function         argument */
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_h,     0,         0},            setlayout,       {.v = &layouts[0]} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_o,     0,         0},            setlayout,       {.v = &layouts[2]} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_o,     0,         0},            onlyclient,      {0} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_v,     0,         0},            setlayout,       {.v = &layouts[0]} },
-	{ {ControlMask, 0,          0,         0},    {XK_w,      XK_less,  0,         0},            setmfact,        {.f = -0.05} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_less,  0,         0},            setmfact,        {.f = +0.05} },
-	{ {ControlMask, ShiftMask,  0,         0},    {XK_w,      XK_0,     0,         0},            setmfact,        {.f = +1.50} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_e,     0,         0},            spawn,           {.v = dmenucmd} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_o,     0,         0},            spawn,           {.v = dmenucmd} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_q,     XK_Return, 0},            quit,            {0} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_b,     XK_d,      XK_Return},    killclient,      {0} },
-	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = +1} },
-	{ {ShiftMask,   0,          ShiftMask, 0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = -1} },
-};
-
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static const Button buttons[] = {
@@ -380,10 +344,6 @@ static const Button buttons[] = {
 	{ ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,              Button3,        resizeorfacts,  {0} },
 	{ ClkClientWin,         MODKEY|ShiftMask,    Button3,        resizemouse,    {0} },
-	{ ClkClientWin,         MODKEY,              Button4,        resizemousescroll, {.v = &scrollargs[0]} },
-	{ ClkClientWin,         MODKEY,              Button5,        resizemousescroll, {.v = &scrollargs[1]} },
-	{ ClkClientWin,         MODKEY,              Button6,        resizemousescroll, {.v = &scrollargs[2]} },
-	{ ClkClientWin,         MODKEY,              Button7,        resizemousescroll, {.v = &scrollargs[3]} },
 	{ ClkTagBar,            0,                   Button1,        view,           {0} },
 	{ ClkTagBar,            0,                   Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,              Button1,        tag,            {0} },

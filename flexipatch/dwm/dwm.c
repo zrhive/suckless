@@ -306,9 +306,9 @@ static int getrootptr(int *x, int *y);
 static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
-static void grabdefkeys(void);
+static void grabkeys(void);
 static void incnmaster(const Arg *arg);
-static void keydefpress(XEvent *e);
+static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
@@ -1416,7 +1416,7 @@ grabbuttons(Client *c, int focused)
 }
 
 void
-grabdefkeys(void)
+grabkeys(void)
 {
 	updatenumlockmask();
 	{
@@ -1463,7 +1463,7 @@ isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info)
 #endif /* XINERAMA */
 
 void
-keydefpress(XEvent *e)
+keypress(XEvent *e)
 {
 	unsigned int i;
 	int keysyms_return;
