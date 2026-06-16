@@ -15,21 +15,8 @@ dragfact(const Arg *arg)
 	if (!(c = m->sel) || !n || !m->lt[m->sellt]->arrange)
 		return;
 
-	else if (m->lt[m->sellt]->arrange == &flextile) {
-		switch (m->ltaxis[LAYOUT]) {
-		case SPLIT_HORIZONTAL:
-		case SPLIT_CENTERED_HORIZONTAL:
-		case SPLIT_HORIZONTAL_DUAL_STACK:
-		case SPLIT_HORIZONTAL_FIXED:
-		case SPLIT_CENTERED_HORIZONTAL_FIXED:
-		case SPLIT_HORIZONTAL_DUAL_STACK_FIXED:
-			horizontal = 1;
-			break;
-		default:
-			horizontal = 0;
-			break;
-		}
-	}
+	else if (m->lt[m->sellt]->arrange == &bstack)
+		horizontal = 1;
 
 	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
 		None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)

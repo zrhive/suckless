@@ -217,27 +217,14 @@ typedef struct {
 } Key;
 
 typedef struct {
-	int nmaster;
-	int nstack;
-	int layout;
-	int masteraxis; // master stack area
-	int stack1axis; // primary stack area
-	int stack2axis; // secondary stack area, e.g. centered master
-	void (*symbolfunc)(Monitor *, unsigned int);
-} LayoutPreset;
-
-typedef struct {
 	const char *symbol;
 	void (*arrange)(Monitor *);
-	LayoutPreset preset;
 } Layout;
 
 typedef struct Pertag Pertag;
 struct Monitor {
 	char ltsymbol[16];
 	float mfact;
-	int ltaxis[4];
-	int nstack;
 	int nmaster;
 	int num;
 	int mx, my, mw, mh;   /* screen size */
@@ -937,7 +924,6 @@ createmon(void)
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
 	m->nmaster = nmaster;
-	m->nstack = nstack;
 	m->showbar = showbar;
 	m->gappih = gappih;
 	m->gappiv = gappiv;
@@ -972,16 +958,10 @@ createmon(void)
 		bar->borderscheme = SchemeNorm;
 	}
 
-	m->ltaxis[LAYOUT] = m->lt[0]->preset.layout;
-	m->ltaxis[MASTER] = m->lt[0]->preset.masteraxis;
-	m->ltaxis[STACK]  = m->lt[0]->preset.stack1axis;
-	m->ltaxis[STACK2] = m->lt[0]->preset.stack2axis;
-
 	if (!(m->pertag = (Pertag *)calloc(1, sizeof(Pertag))))
 		die("fatal: could not malloc() %u bytes\n", sizeof(Pertag));
 	m->pertag->curtag = 1;
 	for (i = 0; i <= NUMTAGS; i++) {
-		m->pertag->nstacks[i] = m->nstack;
 
 		/* init nmaster */
 		m->pertag->nmasters[i] = m->nmaster;
@@ -992,11 +972,6 @@ createmon(void)
 		/* init layouts */
 		m->pertag->ltidxs[i][0] = m->lt[0];
 		m->pertag->ltidxs[i][1] = m->lt[1];
-		/* init flextile axes */
-		m->pertag->ltaxis[i][LAYOUT] = m->ltaxis[LAYOUT];
-		m->pertag->ltaxis[i][MASTER] = m->ltaxis[MASTER];
-		m->pertag->ltaxis[i][STACK]  = m->ltaxis[STACK];
-		m->pertag->ltaxis[i][STACK2] = m->ltaxis[STACK2];
 		m->pertag->sellts[i] = m->sellt;
 
 	}
@@ -2165,20 +2140,6 @@ setlayout(const Arg *arg)
 		selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
 	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
 
-	if (selmon->lt[selmon->sellt]->preset.nmaster && selmon->lt[selmon->sellt]->preset.nmaster != -1)
-		selmon->nmaster = selmon->lt[selmon->sellt]->preset.nmaster;
-	if (selmon->lt[selmon->sellt]->preset.nstack && selmon->lt[selmon->sellt]->preset.nstack != -1)
-		selmon->nstack = selmon->lt[selmon->sellt]->preset.nstack;
-
-	selmon->ltaxis[LAYOUT] = selmon->lt[selmon->sellt]->preset.layout;
-	selmon->ltaxis[MASTER] = selmon->lt[selmon->sellt]->preset.masteraxis;
-	selmon->ltaxis[STACK]  = selmon->lt[selmon->sellt]->preset.stack1axis;
-	selmon->ltaxis[STACK2] = selmon->lt[selmon->sellt]->preset.stack2axis;
-
-	selmon->pertag->ltaxis[selmon->pertag->curtag][LAYOUT] = selmon->ltaxis[LAYOUT];
-	selmon->pertag->ltaxis[selmon->pertag->curtag][MASTER] = selmon->ltaxis[MASTER];
-	selmon->pertag->ltaxis[selmon->pertag->curtag][STACK]  = selmon->ltaxis[STACK];
-	selmon->pertag->ltaxis[selmon->pertag->curtag][STACK2] = selmon->ltaxis[STACK2];
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
 	if (selmon->sel)
 		arrange(selmon);
