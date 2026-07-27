@@ -64,7 +64,7 @@
     if (!(batt_state = battery_state(bat)))
       return NULL;
 
-		return bprintf("%s %d", cap_symbol[batt_state[0] == '+'][cap_perc / 10], cap_perc);
+		return bprintf("%s %d%%", cap_symbol[batt_state[0] == '+'][cap_perc / 10], cap_perc);
 	}
 
   const char *battery_notify(const char *bat)
