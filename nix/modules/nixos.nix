@@ -6,6 +6,6 @@
 
   services.xserver.windowManager.dwm = {
     enable = lib.mkDefault config.suckless.tools.dwm.enable;
-    package = lib.mkDefault config.dwm.tools.dwm.package;
+    package = lib.mkDefault config.suckless.tools.dwm.package;
   };
 }
